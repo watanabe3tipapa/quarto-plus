@@ -347,6 +347,22 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 - スモークテスト `npm run test:editor` でエディタ正常マウント（15ボタン、エラーなし）
 - dist: 画像は `assets/<sha>-<name>` 集約、`images/` 無し、`IntersectionObserver` ローダー注入・eager スクリプト無し
 
+---
+
+## Phase 12: CI アクションの Node 20 非推奨解消（2026-08-12）
+
+### 対応
+`.github/workflows/pages.yml` のアクションを Node 24 ベースの最新メジャーへ更新:
+- `actions/checkout@v4` → `@v5`
+- `actions/setup-node@v4` → `@v5`
+- `actions/configure-pages@v5` → `@v6`
+- `actions/upload-pages-artifact@v3` → `@v4` → **`@v5`**
+
+### 補足
+- `upload-pages-artifact@v4` は内部的に `upload-artifact` の旧コミット（Node 20）を参照するため警告が残った。`@v5`（2026-04 リリース）へ更新して解消。
+- デプロイは引き続き成功。Node 20 非推奨の ANNOTATIONS は表示されなくなった。
+
+
 
 
 
