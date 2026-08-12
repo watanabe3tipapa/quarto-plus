@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: build/site
+  render:
+    - index.qmd
+    - docs/
+    - demo/
+    - build/adoc-qmd/
+
+website:
+  title: "quarto-plus"
+  site-url: https://watanabe3tipapa.github.io/quarto-plus/
+  navbar:
+    left:
+      - href: index.html
+        text: Home
+      - href: docs/tutorial.html
+        text: Tutorial
+      - href: docs/index.html
+        text: Docs
+      - href: demo/index.html
+        text: Demo
+
+metadata-files: []

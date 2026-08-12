@@ -1,0 +1,176 @@
+---
+title: "DOM構造の解説"
+---
+
+quarto-plus が正規化（harmonize）する HTML の DOM 構造を解説します。このトピックでは、フォーマット（`.md / .qmd / .adoc`）が違っても最終的に同じ構造に揃う仕組みを図で示します。
+
+## 全体像
+
+harmonize は各ページの HTML を「見出しID・目次・リンク・画像参照」の4点で正規化します。
+
+```{mermaid}
+flowchart LR
+    A[.md / .qmd] --> R[quarto render]
+    B[.adoc] --> C[asciidoctor]
+    C --> D[HTML]
+    R --> S[build/site]
+    D --> S
+    S --> H[harmonize]
+    H --> T["見出しIDの統一<br/>(id + data-anchor-id)"]
+    H --> N["#toc の再構築<br/>(入れ子)"]
+    H --> L["リンク解決<br/>(同一/クロスページ)"]
+    H --> I["画像参照の統一<br/>(assets/)"]
+    T --> O[dist/]
+    N --> O
+    L --> O
+    I --> O
+```
+
+## ページ全体の構造
+
+正規化後の HTML は大きく 3 つの領域を持ちます。ページタイトル（`h1`）は目次の対象外です。
+
+```{mermaid}
+flowchart TB
+    subgraph BODY[body]
+        direction TB
+        NAV[nav.navbar<br/>サイト共通ナビ]
+        TOC[div#toc<br/>入れ子目次]
+        MAIN[main]
+        subgraph MAIN_IN[main 内]
+            H1[h1.title<br/>ページタイトル]
+            H2[h2<br/>section 見出し]
+            H3[h3<br/>subsection]
+            H4[h4<br/>さらに深い見出し]
+            H2B[h2<br/>次のセクション]
+        end
+        SCRIPT[script<br/>site_libs 各種]
+    end
+```
+
+`#toc` は `main` 直下（無ければ `body` 先頭）に挿入され、`h2` を最上位とする入れ子リストで生成されます。
+
+## 見出しIDの規約
+
+すべての見出し `h2..h6` は「ページプレフィックス + slug」の一意な ID を持ちます。ID は要素の `id` と `data-anchor-id` の両方に設定されます（`data-anchor-id` は quarto の AnchorJS が参照する属性）。
+
+```{mermaid}
+flowchart LR
+    PATH["docs/guide.html"] --> PREFIX["pagePrefix = docs-guide"]
+    H["見出し: 日本語の見出し"] --> SLUG["romanize_slug → no_shi"]
+    PREFIX --> ID["docs-guide-no_shi"]
+    SLUG --> ID
+    ID --> ATTR["id=\"docs-guide-no_shi\"<br/>data-anchor-id=\"docs-guide-no_shi\""]
+```
+
+実際の HTML は以下のようになります。
+
+```html
+<h2 class="anchored" data-anchor-id="docs-guide-no_shi" id="docs-guide-no_shi">
+  日本語の見出し
+</h2>
+```
+
+slug の生成ルールは次のとおりです。
+
+1. かな → ローマ字（`日本語の見出し` → 漢字は `_` → `no_shi`）
+2. 英数字以外は `-` または `_` に置換し、連続を1つに
+3. 先頭末尾のデリミタを除去
+4. 空になった場合は `section` にフォールバック
+5. 同一ページ内で重複する場合は `-2`, `-3` を付与
+
+## 目次（#toc）の入れ子構造
+
+目次は `h2` を深さ0として、`h3` 以上は1段深い `<ul>` にネストされます。`h2` を飛ばして `h4` が現れた場合も、直前の親にネストされます。
+
+```{mermaid}
+flowchart TB
+    TOC[div#toc] --> UL[ul.toc]
+    UL --> L1[li: h2 A]
+    UL --> L2[li: h2 B]
+    L2 --> UL2[ul]
+    UL2 --> L3[li: h3 B-1]
+    L3 --> UL3[ul]
+    UL3 --> L4[li: h4 B-1-a]
+    UL --> L5[li: h2 C]
+```
+
+生成される HTML の骨格は次のとおりです。
+
+```html
+<div id="toc">
+  <ul class="toc">
+    <li><a href="#docs-guide-...">h2 A</a></li>
+    <li><a href="#docs-guide-...">h2 B</a>
+      <ul class="toc">
+        <li><a href="#docs-guide-...">h3 B-1</a>
+          <ul class="toc">
+            <li><a href="#docs-guide-...">h4 B-1-a</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#docs-guide-...">h2 C</a></li>
+  </ul>
+</div>
+```
+
+目次の各リンクは必ず `href="#<finalId>"` を指すため、見出しIDの統一と整合します。
+
+## リンク解決
+
+harmonize はリンクを 3 段階のフォールバックで解決します。
+
+```{mermaid}
+flowchart TD
+    FRAG["href=\"#フラグメント\""] --> A{"idMap に一致?"}
+    A -- はい --> R1["#finalId"]
+    A -- いいえ --> B{"見出しテキストと一致?"}
+    B -- はい --> R1
+    B -- いいえ --> C{"asciidoctor の _ プレフィックス?"}
+    C -- はい --> R1
+    C -- いいえ --> D[そのまま維持]
+```
+
+### 同一ページ内リンク
+
+`[h4への移動](#深い階層)` は `idMap` で解決され、`#docs-guide-i` のように書き換わります。
+
+### クロスページリンク
+
+ページをまたぐ参照は対象ページの ID を解決します。
+
+```{mermaid}
+flowchart LR
+    A["docs/index.html の<br/>href=\"guide.html#日本語の見出し\""] --> B["guide.html の idMap"]
+    B --> C["href=\"guide.html#docs-guide-no_shi\""]
+```
+
+## 画像参照の統一
+
+画像は内容ハッシュ名で `assets/` に集約され、ページの深さに応じた相対パスで参照されます。
+
+```html
+<!-- dist/docs/index.html（1階層下） -->
+<img src="../assets/c414cd0e...-sample.png">
+
+<!-- dist/adoc-sample.html（直下） -->
+<img src="assets/c414cd0e...-adoc-sample.png">
+```
+
+```{mermaid}
+flowchart LR
+    IMG[img src] --> RESOLVE[実体パスを解決] --> HASH[sha256 ハッシュ計算]
+    HASH --> COPY[assets/&lt;sha&gt;-&lt;basename&gt; へコピー]
+    COPY --> REWRITE[src を深さ相対に書換]
+```
+
+## 実物を確認する
+
+デモサイトで実 DOM を確認できます。
+
+- [デモサイト](../demo/index.html)
+- [Markdown デモ](../demo/markdown-demo.html)
+- [AsciiDoc デモ](../build/adoc-qmd/demo/asciidoc-demo.html)
+
+ブラウザのデベロッパーツールで `h2` の `id` 属性、`#toc` の入れ子、`img` の `src` をそれぞれ確認してください。

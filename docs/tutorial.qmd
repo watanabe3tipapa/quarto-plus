@@ -1,0 +1,94 @@
+---
+title: "quarto-plus チュートリアル"
+---
+
+このチュートリアルでは、quarto-plus で `.md / .qmd / .adoc` を単一サイトに統合する手順を説明します。
+
+## 前提条件
+
+以下が必要です。
+
+- [Quarto](https://quarto.org) 1.3 以降（`quarto render` が動くこと）
+- Node.js 20 以降（`npm`）
+- [Asciidoctor](https://asciidoctor.org)（`.adoc` を使う場合のみ）
+
+## プロジェクト構成
+
+```
+quarto-plus/
+  _quarto.yml          # quarto プロジェクト設定
+  index.qmd            # ランディングページ
+  docs/                # .md / .qmd
+  adoc/                # .adoc
+  themes/              # カスタムCSS
+  tools/               # パイプラインスクリプト
+  dist/                # 最終出力（GitHub Pages 用）
+```
+
+## 手順1: 文書を追加する
+
+`docs/` に `.qmd` や `.md`、`adoc/` に `.adoc` を置きます。
+
+```qmd
+---
+title: "サンプルページ"
+---
+
+## セクション
+
+本文ここ。
+```
+
+`.adoc` の例:
+
+```adoc
+= サンプル
+== セクション
+本文ここ。
+```
+
+## 手順2: 依存をインストール
+
+```sh
+npm install
+```
+
+## 手順3: ビルド
+
+```sh
+npm run build:all
+```
+
+内部では次の順に処理されます。
+
+1. `.adoc` を asciidoctor で HTML化
+2. `quarto render` で `.md / .qmd` を生成
+3. adoc由来HTMLを `build/site` にマージ（上書き優先）
+4. 全ページを見出しID・目次・リンクで正規化（harmonize）
+5. 画像を内容ハッシュ名で `assets/` に集約
+6. リンク切れを検証（validate）
+7. 最終成果物を `dist/` に出力
+
+## 手順4: 確認
+
+`dist/` をブラウザで開いて確認します。
+
+```sh
+python3 -m http.server 8000 -d dist
+```
+
+## 手順5: GitHub Pages に公開
+
+`.github/workflows/pages.yml` が用意されています。`main` に push すると自動でビルド・デプロイされます。
+
+- GitHub リポジトリの **Settings → Pages** で「Source: GitHub Actions」を選択
+- `_quarto.yml` の `site-url` を自身の URL に更新
+
+## 見出しIDの規約
+
+- 見出しは `h2` から `h6` が対象（`h1` はページタイトル）
+- ID は `pagePrefix-<slug>` 形式
+- 日本語はかな→ローマ字、未対応漢字は `_` にフォールバック
+- 同一ページ内で重複する場合は `-2`, `-3` を付与
+
+詳しい仕様は [ドキュメント](index.html) と [デモサイト](../demo/index.html) を参照してください。

@@ -1,0 +1,20 @@
+= Adoc サンプルページ
+:doctype: article
+
+このページは Asciidoctor 形式のサンプルです。
+
+== 日本語見出し（Adoc）
+
+Asciidoctor でも見出しが生成されます。
+
+== 英語見出し Adoc
+
+英語見出しはそのまま slug 化されます。
+
+== 入れ子のテスト
+
+=== 1段深い
+
+h3 レベル相当です。
+
+image::images/adoc-sample.png[Adocサンプル]

@@ -1,0 +1,62 @@
+/* Scoped styles for asciidoctor content injected into quarto pages */
+
+.admonitionblock {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 0.25rem solid var(--bs-primary, #0d6efd);
+  background: var(--bs-tertiary-bg, #f8f9fa);
+  border-radius: 0.25rem;
+}
+
+.admonitionblock .icon {
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+.admonitionblock.note .icon { color: #0d6efd; }
+.admonitionblock.tip .icon { color: #198754; }
+.admonitionblock.warning .icon { color: #dc3545; }
+.admonitionblock.caution .icon { color: #fd7e14; }
+
+.listingblock {
+  margin: 1rem 0;
+}
+
+.listingblock pre {
+  background: var(--bs-tertiary-bg, #f8f9fa);
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.25rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+
+.tableblock {
+  margin: 1rem 0;
+  border-collapse: collapse;
+}
+
+.tableblock th,
+.tableblock td {
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  padding: 0.4rem 0.75rem;
+}
+
+.tableblock th {
+  background: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+.imageblock {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.imageblock img {
+  max-width: 100%;
+  height: auto;
+}
+
+.imageblock .title {
+  font-size: 0.9em;
+  color: var(--bs-secondary, #6c757d);
+  margin-top: 0.25rem;
+}

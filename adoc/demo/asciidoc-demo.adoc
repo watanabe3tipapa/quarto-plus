@@ -1,0 +1,25 @@
+= AsciiDoc デモ
+:doctype: article
+
+このページは `.adoc` 形式で書かれています。
+
+== 導入
+
+AsciiDoc は asciidoctor で HTML 化され、quarto サイトにマージされます。
+
+=== ネスト構造
+
+AsciiDoc でも h3 相当のネストが目次に反映されます。
+
+== リンクテスト
+
+- 同一ページ: 後述の <<まとめ>>
+- クロスページ: link:../../../demo/markdown-demo.html[Markdownデモ] へ
+
+== 画像
+
+image::images/adoc-image.png[adoc image]
+
+== まとめ
+
+AsciiDoc デモは以上です。

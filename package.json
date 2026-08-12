@@ -1,0 +1,25 @@
+{
+  "name": "quarto-plus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "quarto-based multi-format (.md/.qmd/.adoc) documentation site pipeline",
+  "scripts": {
+    "clean:adoc": "rm -rf build/adoc-html build/adoc-frag build/adoc-qmd",
+    "build:adoc": "node tools/adoc-to-html.mjs",
+    "clean:site": "rm -rf build/site",
+    "build:site": "quarto render",
+    "merge:adoc": "node tools/merge-adoc.mjs",
+    "clean:harmonized": "rm -rf build/site-harmonized",
+    "harmonize": "node tools/harmonize.mjs",
+    "rebuild:search": "node tools/rebuild-search.mjs",
+    "assets": "node tools/asset-sync.mjs",
+    "validate": "node tools/validate.mjs",
+    "clean:dist": "rm -rf dist",
+    "copy:dist": "node tools/copy-dist.mjs",
+    "build:all": "npm run clean:adoc && npm run build:adoc && npm run clean:site && npm run build:site && npm run merge:adoc && npm run clean:harmonized && npm run harmonize && npm run rebuild:search && npm run assets && npm run validate && npm run clean:dist && npm run copy:dist"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

@@ -1,0 +1,82 @@
+---
+title: "quarto-plus"
+format:
+  html:
+    css: themes/lp.css
+    toc: false
+---
+
+<div class="hero">
+  <h1 class="hero-title">quarto-plus</h1>
+  <p class="hero-subtitle">
+    `.md` / `.qmd` / `.adoc` を横断する quarto ベースのドキュメント統合パイプライン
+  </p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="docs/tutorial.html">チュートリアル</a>
+    <a class="btn btn-outline-light" href="demo/index.html">デモを見る</a>
+    <a class="btn btn-outline-light" href="docs/index.html">ドキュメント</a>
+  </div>
+</div>
+
+## なにができるのか
+
+異なるフォーマットの文書を、**単一の静的サイト**に統合します。
+
+| 入力 | 変換 | 出力 |
+|---|---|---|
+| `.md` / `.qmd` | quarto render | 統一HTML |
+| `.adoc` | asciidoctor → HTML | 統一HTML（マージ） |
+
+統合後は、見出しID・目次・リンク・画像参照を **同じルールで正規化**します。
+
+<div class="feature-grid">
+
+<div class="feature-card">
+
+### 見出しIDの統一
+
+全ページの `h2..h6` が `pagePrefix-<slug>` の一意な ID を持ちます。日本語見出しは英語化 slug に変換され、衝突時は連番で解決されます。
+
+</div>
+
+<div class="feature-card">
+
+### 目次の自動再構築
+
+`h2..h6` から入れ子構造の `#toc` を生成します。quarto / asciidoctor どちらの由来ページでも同じ構造に揃います。
+
+</div>
+
+<div class="feature-card">
+
+### クロスページリンクの解決
+
+ページをまたぐアンカー参照も追従します。フォーマット変更後もリンク切れになりません。
+
+</div>
+
+<div class="feature-card">
+
+### 画像のハッシュ集約
+
+参照されている画像を内容ハッシュ名で `assets/` に集約し、参照パスを自動で書き換えます。
+
+</div>
+
+</div>
+
+## パイプライン
+
+```
+adoc → html ─┐
+              ├→ merge → harmonize → asset-sync → validate → dist/
+quarto render ┘
+```
+
+`npm run build:all` の一発で、検証済みのサイトが `dist/` に出力されます。
+
+## 始める
+
+1. [チュートリアル](docs/tutorial.html) でパイプラインを理解する
+2. [デモサイト](demo/index.html) で各フォーマットの統合結果を確認する
+3. [ドキュメント](docs/index.html) で詳細仕様を参照する
