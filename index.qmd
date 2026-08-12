@@ -75,6 +75,16 @@ quarto render ┘
 
 `npm run build:all` の一発で、検証済みのサイトが `dist/` に出力されます。
 
+## エディタ
+
+Lexical ベースのリッチテキストエディタのデモです。入力内容はブラウザに自動保存されます。
+
+<div class="editor-section">
+
+<div id="qp-editor-root"></div>
+
+</div>
+
 ## 始める
 
 1. [チュートリアル](docs/tutorial.html) でパイプラインを理解する

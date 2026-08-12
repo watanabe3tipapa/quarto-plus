@@ -289,5 +289,34 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 ### 残課題
 - **#4** srcset/picture/video poster / CSS `url()` の資産集約（Phase 3 計画のまま）
 
+---
+
+## Phase 10: LP に Lexical エディタを追加（2026-08-12）
+
+### 目的
+ランディングページ（`index.qmd`）にリッチテキストエディタ機能を追加。エディタは Meta の **Lexical**（React 版）を採用。
+
+### 実装
+- **ソース**: `editor/src/index.jsx` / `editor/src/App.jsx` / `editor/src/editor.css`
+  - ツールバー: 取り消し/やり直し / 太字・斜体・下線・取消線・コード / H2・H3・段落・引用 / 箇条書き・番号付き・チェックリスト / リンク
+  - `OnChangePlugin` で内容を `localStorage`（`qp-editor-state`）へ自動保存・復元
+  - 文字数・単語数をフッタに表示
+- **バンドル**: `tools/build-editor.mjs`（esbuild）。React+Lexical を単一 `build/editor/index.js`（+`index.css`）へ。
+- **注入**: `tools/inject-editor.mjs`
+  - `build/editor` の成果物を `index.js/css` → `editor/editor.js/css` にリネームして `build/site/editor/` へコピー
+  - `build/site/index.html` の `<head>` に CSS、`<body>` 末尾に `<script defer>` を注入
+- **index.qmd**: `## エディタ` セクション + `<div id="qp-editor-root">` マウント点を追加
+- **build:all**: `clean:editor → build:editor` を quarto render 前に、`inject:editor` を render 後に追加
+
+### 検証（jsdom スモークテスト `scripts/smoke-editor.mjs` / `npm run test:editor`）
+- エディタが正常マウント（`[contenteditable]` 生成、ツールバー15ボタン）
+- ツールバー全操作（H2/H3/リスト/引用/太字/undo/redo）でエラーなし
+- **注意点**: `AutoLinkNode` の登録漏れで Lexical error #77 が発生。`@lexical/link` から `AutoLinkNode` を `nodes` に追加して解消
+
+### 既知の制約
+- エディタはデモ用途。内容はブラウザ localStorage のみ（サーバー保存なし）
+- bundle は minify で約 628KB（React+Lexical）。当面 LP のみで許容
+
+
 
 ---
