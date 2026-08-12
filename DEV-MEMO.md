@@ -391,3 +391,22 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 
 
 ---
+
+## Phase 14: LP表示のずれ修正（2026-08-12）
+
+### 報告された不具合（Chrome headless + CDP で座標実測）
+1. 黒字の「quarto-plus」（quarto標準の `#title-block-header` の h1.title）が hero に下から17px重ねられ、文字下部が切れて見える
+   - hero の `margin-top: -2rem` がタイトルブロックを覆っていた
+2. エディタのプレースホルダ「ここに入力してください」が、ツールバー高さ分（約48.6px）上にずれて表示
+   - RichTextPlugin は contentEditable と placeholder を兄弟要素として直接出力する。placeholder は `.ed-card`（relative）基準の `top:1rem` だが、content の1行目はツールバーを挟んだ先にあるため、相対位置が合わなかった
+
+### 対応
+- `themes/lp.css`: `#title-block-header { display:none }` を追加（LPはヒーローがタイトルを担うため）
+  - → hero が navbar 直下（top≈58px）にフラッシュ配置される
+- `editor/src/App.jsx`: RichTextPlugin を `<div class="ed-body">` でラップ
+- `editor/src/editor.css`: `.ed-body { position:relative }` を追加。`.ed-placeholder` に `line-height:1.7` を設定し content の1行目と揃える
+
+### 検証（CDP再測定）
+- `#title-block-header`: w/h=0（非表示確認）。hero top 58px（navbar直下、重なり無し）
+- `.ed-placeholder` top=473.7 / line-height=28.9 が、`.ed-content` の1行目（top=473.7 / line-height=28.9）と完全一致
+- `npm run build:all` 成功（validate OK）、`npm run test:editor` 正常（15ボタン・入出力ラウンドトリップ成功）

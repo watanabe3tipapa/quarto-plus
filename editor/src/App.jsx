@@ -259,10 +259,12 @@ function App() {
         <InitialContentPlugin />
         <SavePlugin />
         <HistoryPlugin />
-        <RichTextPlugin
-          contentEditable={<ContentEditable className="ed-content" ariaLabel="エディタ" />}
-          placeholder={<div className="ed-placeholder">ここに入力してください…</div>}
-        />
+        <div className="ed-body">
+          <RichTextPlugin
+            contentEditable={<ContentEditable className="ed-content" ariaLabel="エディタ" />}
+            placeholder={<div className="ed-placeholder">ここに入力してください…</div>}
+          />
+        </div>
         <ListPlugin />
         <LinkPlugin />
         <CheckListPlugin />

@@ -14,6 +14,10 @@
   background: #f9fafb;
 }
 
+.ed-body {
+  position: relative;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -69,6 +73,8 @@
   color: #9ca3af;
   pointer-events: none;
   user-select: none;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 .ed-paragraph {

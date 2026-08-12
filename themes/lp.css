@@ -1,5 +1,10 @@
 /* Landing page (index.qmd) styles */
 
+/* LPはヒーローがタイトルを担うため、quarto標準のタイトルブロック（黒字h1）は非表示 */
+#title-block-header {
+  display: none;
+}
+
 .hero {
   text-align: center;
   padding: 4rem 1rem 3rem;
