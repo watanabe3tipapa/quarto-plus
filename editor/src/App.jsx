@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { $getRoot, $getSelection, $isRangeSelection, UNDO_COMMAND, REDO_COMMAND } from "lexical";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { $getRoot, $getSelection, $isRangeSelection, ParagraphNode, UNDO_COMMAND, REDO_COMMAND } from "lexical";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -16,6 +16,8 @@ import { LinkNode, AutoLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { $setBlocksType } from "@lexical/selection";
 import { $isLinkNode } from "@lexical/link";
+import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import { $generateHtmlFromNodes } from "@lexical/html";
 
 import "./editor.css";
 
@@ -142,6 +144,67 @@ function ToolbarPlugin({ onStatsChange }) {
   );
 }
 
+function download(filename, text, mime) {
+  const blob = new Blob([text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function ActionsPlugin() {
+  const [editor] = useLexicalComposerContext();
+  const fileRef = useRef(null);
+
+  const exportMarkdown = () => {
+    const md = editor.getEditorState().read(() => $convertToMarkdownString(TRANSFORMERS));
+    download("editor.md", md, "text/markdown");
+  };
+  const exportHtml = () => {
+    const html = editor.getEditorState().read(() => $generateHtmlFromNodes(editor));
+    download("editor.html", html, "text/html");
+  };
+  const exportJson = () => {
+    const json = JSON.stringify(editor.getEditorState().toJSON(), null, 2);
+    download("editor.json", json, "application/json");
+  };
+  const importJson = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        editor.setEditorState(editor.parseEditorState(reader.result));
+      } catch (e) {
+        console.error(e);
+        alert("JSON の読み込みに失敗しました");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  return (
+    <div className="ed-actions">
+      <button type="button" className="ed-action" onClick={exportMarkdown}>MD 出力</button>
+      <button type="button" className="ed-action" onClick={exportHtml}>HTML 出力</button>
+      <button type="button" className="ed-action" onClick={exportJson}>JSON 出力</button>
+      <button type="button" className="ed-action" onClick={() => fileRef.current && fileRef.current.click()}>JSON 読込</button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".json,application/json"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          if (e.target.files[0]) importJson(e.target.files[0]);
+          e.target.value = "";
+        }}
+      />
+    </div>
+  );
+}
+
 function InitialContentPlugin() {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
@@ -204,6 +267,7 @@ function App() {
         <LinkPlugin />
         <CheckListPlugin />
         <AutoLinkPlugin matchers={[(text) => { const m = URL_MATCHER.exec(text); if (m === null) return null; return { index: m.index, length: m[0].length, text: m[0], url: m[0] }; }]} />
+        <ActionsPlugin />
       </LexicalComposer>
       <div className="ed-status">
         {stats.words} words · {stats.chars} chars（自動保存）

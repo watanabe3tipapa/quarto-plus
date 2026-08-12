@@ -60,3 +60,82 @@
   color: var(--bs-secondary, #6c757d);
   margin-top: 0.25rem;
 }
+
+/* --- セクション構造（quarto/Bootstrap のプローズと統一） --- */
+
+div.sect1,
+div.sect2 {
+  margin-bottom: 1.5rem;
+}
+
+div.sect1 > h2,
+div.sect2 > h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+div.sect1 > h2 {
+  font-size: 1.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+div.sect2 > h3 {
+  font-size: 1.25rem;
+}
+
+div.sect1 > h2:first-child,
+div.sect2 > h3:first-child {
+  margin-top: 0;
+}
+
+.sectionbody > .paragraph {
+  margin-bottom: 1rem;
+}
+
+/* --- リスト --- */
+
+.ulist,
+.olist,
+.dlist,
+.hdlist,
+.colist {
+  margin: 0 0 1rem;
+}
+
+/* --- 引用・サイドバー・例・詩 --- */
+
+.quoteblock,
+.sidebarblock,
+.exampleblock,
+.verseblock {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 0.25rem solid var(--bs-border-color, #dee2e6);
+  background: var(--bs-tertiary-bg, #f8f9fa);
+  border-radius: 0.25rem;
+}
+
+.quoteblock .title,
+.sidebarblock .title,
+.exampleblock .title,
+.verseblock .title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.quoteblock blockquote {
+  margin: 0;
+  font-style: italic;
+  color: var(--bs-secondary, #6c757d);
+}
+
+/* --- コードブロックのシンタックス要素との整合 --- */
+
+.listingblock pre code {
+  color: inherit;
+  background: transparent;
+  padding: 0;
+}

@@ -362,6 +362,30 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 - `upload-pages-artifact@v4` は内部的に `upload-artifact` の旧コミット（Node 20）を参照するため警告が残った。`@v5`（2026-04 リリース）へ更新して解消。
 - デプロイは引き続き成功。Node 20 非推奨の ANNOTATIONS は表示されなくなった。
 
+---
+
+## Phase 13: エディタ入出力・検索検証・adoc テーマ統一（2026-08-12）
+
+### 1. エディタのエクスポート/インポート（P1 #3）
+`editor/src/App.jsx` に `ActionsPlugin` を追加（`@lexical/markdown`・`@lexical/html` を導入）:
+- **MD 出力**（`$convertToMarkdownString` / `TRANSFORMERS`）、**HTML 出力**（`$generateHtmlFromNodes`）、**JSON 出力**（`toJSON`）→ Blob ダウンロード
+- **JSON 読込**（hidden file input → `parseEditorState`）
+
+### 2. サイト内検索の検証（P3 #6）
+- quarto-search は `offsetURL("search.json")`（`<meta name="quarto:offset">` でページ深さごとに相対解決）で読込。ルート= `./`、docs/= `../` で `/quarto-plus/search.json` に正しく解決。
+- Fuse の検索キーは `title/section/text`。`rebuild-search.mjs` の search.json はこのスキーマに一致。
+- **検証結果**: 配布される `dist/search.json` は最終ID参照のみ（生日本語フラグメント 0 件）、全 68 href が実在 ID/ファイルに解決。**コード修正は不要だった**（※初回検証時に誤って quarto 生成元の `build/site/search.json` を確認したため一時的に不一致に見えた）。
+
+### 3. adoc ページのテーマ統一（P3 #7）
+- qmd ラップ方式により adoc ページは既に quarto の navbar / Bootstrap / `main.content` / `anchored` 見出しを継承。
+- `themes/adoc.css` に未スタイルだった asciidoctor ブロック（`sect1/sect2` 余白・見出し、`quoteblock/sidebarblock/exampleblock/verseblock`、`ulist/olist/dlist`、`listingblock pre code`）を Bootstrap CSS 変数ベースで追加し、quarto のプローズと統一。
+
+### 検証
+- `npm run build:all` 成功、`validate: OK (9 pages)`
+- `npm run test:editor`: エクスポート3種 + JSON 読込 → MD 出力のラウンドトリップ成功（`## 見出しテスト / **太字の段落** / Hello world`）
+- adoc ページに `themes/adoc.css` 適用を確認
+
+
 
 
 
