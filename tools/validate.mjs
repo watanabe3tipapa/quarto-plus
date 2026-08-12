@@ -65,12 +65,32 @@ async function main() {
     }
 
     const links = [];
-    $("a[href]").each((_, a) => {
-      links.push($(a).attr("href"));
+    const pushSrcset = (value) => {
+      if (!value) return;
+      for (const part of value.split(",")) {
+        const m = part.trim().match(/^(\S+)/);
+        if (m) links.push(m[1]);
+      }
+    };
+    const pushAttr = (sel, attr) => {
+      $(sel).each((_, el) => {
+        const v = $(el).attr(attr);
+        if (v) links.push(v);
+      });
+    };
+
+    pushAttr("a", "href");
+    pushAttr("img", "src");
+    $("img").each((_, el) => pushSrcset($(el).attr("srcset")));
+    $("source").each((_, el) => {
+      const src = $(el).attr("src");
+      if (src) links.push(src);
+      pushSrcset($(el).attr("srcset"));
     });
-    $("img[src]").each((_, a) => {
-      links.push($(a).attr("src"));
-    });
+    pushAttr("video, audio", "src");
+    pushAttr("video", "poster");
+    pushAttr("link", "href");
+    pushAttr("script", "src");
 
     for (const href of links) {
       if (!href || isRemote(href)) continue;

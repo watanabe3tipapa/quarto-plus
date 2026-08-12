@@ -317,6 +317,37 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 - エディタはデモ用途。内容はブラウザ localStorage のみ（サーバー保存なし）
 - bundle は minify で約 628KB（React+Lexical）。当面 LP のみで許容
 
+---
+
+## Phase 11: 資産集約の拡張とエディタ bundle の遅延ロード（2026-08-12）
+
+### 目的
+1. 残課題 #4（srcset / picture / video / CSS url() の資産集約）に対応
+2. エディタ bundle（628KB）の初回表示コストを削減
+
+### 1. asset-sync.mjs の拡張
+- 集約対象を `img[src]` から以下へ拡張:
+  - `img[srcset]` / `source[srcset]`（カンマ区切り候補を個別にハッシュ集約）
+  - `source[src]` / `video[src]` / `audio[src]` / `video[poster]`
+  - CSS `url()`（`*.css` を走査し、data:/http(s)/# はスキップ、ローカル参照のみ集約）
+- 参照パスは参照元（html/css）からの深さ相対へ書換
+- 現サイトでは CSS url() は全て `data:` URI、srcset/picture/video は不使用のため実質 no-op（将来のコンテンツ向け）
+
+### 2. validate.mjs の拡張
+- 存在チェック対象を `a[href]` / `img[src]` から、`img[srcset]` / `source[src|srcset]` / `video/audio[src]` / `video[poster]` / `link[href]` / `script[src]` へ拡張
+
+### 3. エディタ bundle の遅延ロード
+- `tools/inject-editor.mjs` が `<script defer src=editor/editor.js>` を直接入れるのをやめ、**IntersectionObserver ローダー**を注入
+- `#qp-editor-root` がビューポート（rootMargin 300px）に入った時のみ `editor/editor.js` を動的ロード
+- 非対応ブラウザは `load()` を即時実行（フォールバック）
+- 効果: LP 初回表示で 628KB の JS をダウンロード・解析しない
+
+### 検証
+- `npm run build:all` 成功、`validate: OK (9 pages, no broken anchors)`
+- スモークテスト `npm run test:editor` でエディタ正常マウント（15ボタン、エラーなし）
+- dist: 画像は `assets/<sha>-<name>` 集約、`images/` 無し、`IntersectionObserver` ローダー注入・eager スクリプト無し
+
+
 
 
 ---

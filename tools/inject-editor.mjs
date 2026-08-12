@@ -7,6 +7,32 @@ const EDITOR_BUILD = path.join(ROOT, "build/editor");
 const EDITOR_SITE_DIR = path.join(SITE_DIR, "editor");
 const LP_HTML = path.join(SITE_DIR, "index.html");
 
+const LOADER = `<script>
+(function () {
+  var root = document.getElementById('qp-editor-root');
+  if (!root) return;
+  function load() {
+    if (window.__qpEditorLoaded) return;
+    window.__qpEditorLoaded = true;
+    var s = document.createElement('script');
+    s.src = 'editor/editor.js';
+    s.defer = true;
+    document.body.appendChild(s);
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        io.disconnect();
+        load();
+      }
+    }, { rootMargin: '300px' });
+    io.observe(root);
+  } else {
+    load();
+  }
+})();
+<\/script>`;
+
 async function copyEditorAssets() {
   const files = await fs.readdir(EDITOR_BUILD);
   await fs.mkdir(EDITOR_SITE_DIR, { recursive: true });
@@ -32,7 +58,7 @@ async function injectIntoLp() {
   $("body").each((_, el) => {
     const $body = $(el);
     if (!$body.find("script[src='editor/editor.js']").length) {
-      $body.append('<script defer src="editor/editor.js"></script>');
+      $body.append(LOADER);
       injected = true;
     }
   });
