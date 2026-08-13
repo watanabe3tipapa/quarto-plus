@@ -1,45 +1,27 @@
 {
   "name": "quarto-plus",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "quarto-based multi-format (.md/.qmd/.adoc) documentation site pipeline",
   "scripts": {
-    "clean:adoc": "rm -rf build/adoc-html build/adoc-frag build/adoc-qmd",
+    "clean:adoc": "rm -rf build/adoc-html build/adoc-frag adoc-pages",
     "build:adoc": "node tools/adoc-to-html.mjs",
-    "clean:editor": "rm -rf build/editor",
-    "build:editor": "node tools/build-editor.mjs",
     "clean:site": "rm -rf build/site",
     "build:site": "quarto render",
-    "inject:editor": "node tools/inject-editor.mjs",
     "merge:adoc": "node tools/merge-adoc.mjs",
     "clean:harmonized": "rm -rf build/site-harmonized",
     "harmonize": "node tools/harmonize.mjs",
     "rebuild:search": "node tools/rebuild-search.mjs",
     "assets": "node tools/asset-sync.mjs",
     "validate": "node tools/validate.mjs",
+    "validate:templates": "node tools/validate-doc-types.mjs",
     "clean:dist": "rm -rf dist",
     "copy:dist": "node tools/copy-dist.mjs",
-    "test:editor": "node scripts/smoke-editor.mjs",
-    "build:all": "npm run clean:adoc && npm run build:adoc && npm run clean:editor && npm run build:editor && npm run clean:site && npm run build:site && npm run inject:editor && npm run merge:adoc && npm run clean:harmonized && npm run harmonize && npm run rebuild:search && npm run assets && npm run validate && npm run clean:dist && npm run copy:dist"
+    "build:all": "npm run clean:adoc && npm run build:adoc && npm run clean:site && npm run build:site && npm run merge:adoc && npm run clean:harmonized && npm run harmonize && npm run rebuild:search && npm run assets && npm run validate && npm run validate:templates && npm run clean:dist && npm run copy:dist"
   },
   "dependencies": {
-    "@lexical/code": "^0.49.0",
-    "@lexical/html": "^0.49.0",
-    "@lexical/link": "^0.49.0",
-    "@lexical/list": "^0.49.0",
-    "@lexical/markdown": "^0.49.0",
-    "@lexical/react": "^0.49.0",
-    "@lexical/rich-text": "^0.49.0",
-    "@lexical/selection": "^0.49.0",
-    "@lexical/utils": "^0.49.0",
-    "cheerio": "^1.0.0",
-    "lexical": "^0.49.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "cheerio": "^1.0.0"
   },
-  "devDependencies": {
-    "esbuild": "^0.28.2",
-    "jsdom": "^29.1.1"
-  }
+  "devDependencies": {}
 }

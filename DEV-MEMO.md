@@ -410,3 +410,69 @@ qmd ラップ方式により adoc デモの出力先が `demo/asciidoc-demo.html
 - `#title-block-header`: w/h=0（非表示確認）。hero top 58px（navbar直下、重なり無し）
 - `.ed-placeholder` top=473.7 / line-height=28.9 が、`.ed-content` の1行目（top=473.7 / line-height=28.9）と完全一致
 - `npm run build:all` 成功（validate OK）、`npm run test:editor` 正常（15ボタン・入出力ラウンドトリップ成功）
+
+---
+
+## Phase 15: テンプレートライブラリ再編（2026-08-13）
+
+### 方針転換
+LP は「チュートリアルとしての立ち位置」に簡素化し、本体（docs/）に **実用雛形（コピペ用テンプレート）** を多数整備。`watanabe3tipapa/okf-seedling` の「concept 型 × frontmatter レジストリ」の方式を移植した。
+
+### 1. エディタ完全削除（Phase 10-14 の機能を廃止）
+- `editor/`（ソース・CSS）、`tools/build-editor.mjs`、`tools/inject-editor.mjs`、`scripts/smoke-editor.mjs` を削除
+- `package.json`: エディタ関連スクリプト・依存（lexical / react / esbuild / jsdom）を除去。`build:all` から該当ステップを除去
+- `index.qmd` から `#qp-editor-root` / `editor-section` を除去。`themes/lp.css` の `.editor-section` を除去
+
+### 2. LP 刷新（チュートリアル導線化）
+- hero + 「このサイトの読み方」（チュートリアル → テンプレート → DOM仕様）+ テンプレート型一覧 + パイプライン図
+- 機能カード・エディタデモを廃止し、okf-seedling の index と同型の「まず読んでほしい」構成へ
+
+### 3. テンプレートライブラリ（docs/templates/）
+**実用雛形 34 ページ**（qmd 15 / md 14 / adoc 5）+ カタログ `docs/templates/index.qmd`
+- qmd: basic / playbook / runbook / troubleshooting / api-overview / api-endpoint / api-schema / design-doc / proposal / research-note / how-to / faq / onboarding / blog-post / report
+- md: basic / advanced（旧 `docs/guide.md` を移設・趣意変更）/ adr / decision-log / meeting-notes / reading-notes / release-notes / changelog / incident-report / weekly-report / status-report / glossary / cheatsheet / comparison
+- adoc: basic / playbook / api-reference / meeting-notes / cheatsheet（`adoc/templates/`、adoc.css の実証を兼ねる）
+
+### 4. doc-type レジストリ + バリデータ（okf-seedling 流）
+- `tools/doc-types.json`: 28 型 × 必須見出しを定義し、`templates` マニフェスト（34 ファイル → 型）を保持
+- `tools/validate-doc-types.mjs`: 各雛形のソース見出し（qmd/md は `#`、adoc は `=`）が必須見出しを満たすか検査。コードフェンスを除外
+- `package.json` の `build:all` 末尾に `validate:templates` を追加
+
+### 5. adoc URL 改善（`build/adoc-qmd/` → `adoc-pages/`）
+- `tools/config.mjs`: `ADOC_QMD_DIR` をルート直下 `adoc-pages/` へ変更
+- `_quarto.yml` の render を `- adoc-pages/` へ、`.gitignore` に `adoc-pages/` を追加、`clean:adoc` を更新
+- 効果: 公開 URL が `…/build/adoc-qmd/…` → `…/adoc-pages/…` になり、ビルド内部パスが URL に露出しない
+
+### 6. demo/ 統合 + ナビゲーション
+- `demo/`・`adoc/demo/` を削除。コンテンツはテンプレートへ吸収（`demo/images/*` → `docs/templates/images/`、`adoc/demo/images/*` → `adoc/templates/images/`）
+- navbar: Home / Tutorial / Templates / Docs（`docs/templates/index.html` を追加、Demo を除去）
+
+### 7. 実装時に踏んだ罠
+- **quarto の md 見出しアンカーは正規化される**: `節: なぜ階層を揃えるのか` → `data-anchor-id="節-なぜ階層を揃えるのか"`（`:` 除去・空白を `-` に）。自己リンクは quarto の正規化後形式で書く（`#節: …` では harmonize の idMap に一致せず validate が検出）
+- **docs/ 配下ページから templates への相対パスは `templates/…`**（`../templates/…` は site 直下を指し切れる）
+
+### 検証
+- `npm run build:all` 成功、`validate: OK (40 pages, no broken anchors)`、`validate-doc-types: OK (19 templates checked)`、`rebuild-search: 242 entries`（生日本語フラグメント 0）
+- dist: 全 40 ページ、`images/` ディレクトリ無し（`assets/<sha>-<name>` 集約）、`.nojekyll` 生成、adoc ページが navbar / `adoc.css` / `<main>` を保持、URL に `build/` が残らない、エディタ成果物・demo 無し
+- LP: `#toc` 無し・エディタローダー無し・hero 導線構成
+
+---
+
+## Phase 16: README 整備と v0.3.0 バージョン確定（2026-08-13）
+
+### 対応
+- `README.md` / `README_en.md` を新規作成（`okf-seedling` の README 構成に倣う）
+  - タグライン「文書は、書くときは自由。届けるときは、ひとつに。」
+  - バッジ: MIT / v0.3.0 / GitHub Pages live / issues
+  - コンセプト表（書くとき ↔ 届けるとき の対応物）・フォーマット非競合の説明・ドキュメント向けリンター
+  - インストール（前提条件表 + clone → npm install → build:all → deploy）
+  - テンプレート一覧（qmd 15 / md 14 / adoc 5）・読書順・コントリビューション・ライセンス
+- `LICENSE`（MIT）を新規作成（okf-seedling と同内容）
+- `package.json` / `package-lock.json` のバージョンを **0.1.0 → 0.3.0** へ更新
+
+### 備考
+- ルートの README.md / LICENSE は quarto の render 対象外（`render:` が index.qmd / docs/ / adoc-pages/ の明示指定のため）。サイトには影響しない
+- サイト内の導線・テンプレートカタログはそのまま README のリンク先として機能
+
+### 検証
+- `npm run build:all` 成功（v0.3.0）、`validate: OK (40 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`

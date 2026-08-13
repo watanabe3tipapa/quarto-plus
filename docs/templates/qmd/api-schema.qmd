@@ -1,0 +1,44 @@
+---
+title: "API スキーマ（Schema）テンプレート"
+tags: [api]
+---
+
+入出力データの型定義をまとめるページです。
+
+## フィールド
+
+### Order
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `id` | string | はい | 一意識別子 |
+| `status` | string | はい | `pending` / `paid` / `cancelled` |
+| `total` | number | はい | 合計金額（円） |
+| `items` | Item[] | はい | 注文商品 |
+
+### Item
+
+| フィールド | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `name` | string | はい | 商品名 |
+| `price` | number | はい | 単価（円） |
+
+## JSON 例
+
+```json
+{
+  "id": "ord_123",
+  "status": "paid",
+  "total": 2400,
+  "items": [
+    { "name": "book", "price": 1200 },
+    { "name": "pen", "price": 1200 }
+  ]
+}
+```
+
+## 関連
+
+- [API 概要](api-overview.html)
+- [エンドポイント例](api-endpoint.html)
+- [テンプレートカタログ](../index.html)

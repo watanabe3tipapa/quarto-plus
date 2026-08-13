@@ -1,6 +1,7 @@
 node_modules/
 build/
 dist/
+adoc-pages/
 .DS_Store
 
 /.quarto/

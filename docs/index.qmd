@@ -6,8 +6,9 @@ title: "quarto-plus ドキュメント"
 
 ## トピック
 
-- [DOM構造の解説](dom-structure.html) — harmonize が正規化する DOM 構造の全体像・見出しID・目次・リンク解決・画像参照
+- [テンプレートライブラリ](templates/index.html) — コピーして使える実用雛形の一覧
 - [クイックスタート](tutorial.html) — はじめ方のチュートリアル
+- [DOM構造の解説](dom-structure.html) — harmonize が正規化する DOM 構造の全体像・見出しID・目次・リンク解決・画像参照
 
 ## 機能
 
@@ -17,7 +18,7 @@ title: "quarto-plus ドキュメント"
 
 ### クロスページリンク
 
-[マークダウン詳細](guide.html#日本語の見出し) へ移動できます。
+ページをまたぐアンカー参照も自動で解決されます。実例は [応用マークダウンテンプレート](templates/md/advanced.html) を参照してください。
 
 ### 画像
 

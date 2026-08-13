@@ -1,0 +1,40 @@
+= チートシート（Cheatsheet）テンプレート（AsciiDoc 版）
+:doctype: article
+
+頻出操作を一覧で引けるようにまとめます。AsciiDoc のブロック構文の見本も兼ねています。
+
+== ビルド
+
+[cols="2,4"]
+|===
+| 操作 | コマンド
+| 通しビルド | `npm run build:all`
+| サイトのみ再ビルド | `npm run build:site`
+| 検証のみ | `npm run validate`
+|===
+
+== 注意（Admonition の見本）
+
+[NOTE]
+====
+ビルド前に `npm install` を実行してください。
+====
+
+[WARNING]
+====
+`dist/` は毎回クリーンして再生成されます。手編集しないでください。
+====
+
+== 見出し ID のルール
+
+* 形式: `pagePrefix-<slug>`
+* 日本語はかな → ローマ字、未対応文字は `_`
+* 同一ページ内の重複は `-2`, `-3` を付与
+
+== 画像（イメージブロックの見本）
+
+image::images/adoc-sample.png[AsciiDoc サンプル画像]
+
+== 関連
+
+* link:../../docs/templates/index.html[テンプレートカタログ]

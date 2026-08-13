@@ -4,8 +4,7 @@ project:
   render:
     - index.qmd
     - docs/
-    - demo/
-    - build/adoc-qmd/
+    - adoc-pages/
 
 website:
   title: "quarto-plus"
@@ -16,9 +15,9 @@ website:
         text: Home
       - href: docs/tutorial.html
         text: Tutorial
+      - href: docs/templates/index.html
+        text: Templates
       - href: docs/index.html
         text: Docs
-      - href: demo/index.html
-        text: Demo
 
 metadata-files: []

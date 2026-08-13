@@ -56,18 +56,18 @@ flowchart TB
 
 ```{mermaid}
 flowchart LR
-    PATH["docs/guide.html"] --> PREFIX["pagePrefix = docs-guide"]
-    H["見出し: 日本語の見出し"] --> SLUG["romanize_slug → no_shi"]
-    PREFIX --> ID["docs-guide-no_shi"]
+    PATH["docs/templates/md/advanced.html"] --> PREFIX["pagePrefix = docs-templates-md-advanced"]
+    H["見出し: 節: なぜ階層を揃えるのか"] --> SLUG["romanize_slug → na_wo_erunoka"]
+    PREFIX --> ID["docs-templates-md-advanced-na_wo_erunoka"]
     SLUG --> ID
-    ID --> ATTR["id=\"docs-guide-no_shi\"<br/>data-anchor-id=\"docs-guide-no_shi\""]
+    ID --> ATTR["id=\"docs-templates-md-advanced-na_wo_erunoka\"<br/>data-anchor-id=\"docs-templates-md-advanced-na_wo_erunoka\""]
 ```
 
 実際の HTML は以下のようになります。
 
 ```html
-<h2 class="anchored" data-anchor-id="docs-guide-no_shi" id="docs-guide-no_shi">
-  日本語の見出し
+<h2 class="anchored" data-anchor-id="docs-templates-md-advanced-na_wo_erunoka" id="docs-templates-md-advanced-na_wo_erunoka">
+  節: なぜ階層を揃えるのか
 </h2>
 ```
 
@@ -134,7 +134,7 @@ flowchart TD
 
 ### 同一ページ内リンク
 
-`[h4への移動](#深い階層)` は `idMap` で解決され、`#docs-guide-i` のように書き換わります。
+`[節: なぜ階層を揃えるのか](#節: なぜ階層を揃えるのか)` のような同一ページ参照は、見出しの `data-anchor-id`（原文）が `idMap` で `finalId` に解決され、`#docs-templates-md-advanced-na_wo_erunoka` に書き換わります。
 
 ### クロスページリンク
 
@@ -142,8 +142,8 @@ flowchart TD
 
 ```{mermaid}
 flowchart LR
-    A["docs/index.html の<br/>href=\"guide.html#日本語の見出し\""] --> B["guide.html の idMap"]
-    B --> C["href=\"guide.html#docs-guide-no_shi\""]
+    A["docs/index.html の<br/>href=\"templates/md/advanced.html#節: なぜ階層を揃えるのか\""] --> B["advanced.html の idMap/textMap"]
+    B --> C["href=\"templates/md/advanced.html#docs-templates-md-advanced-na_wo_erunoka\""]
 ```
 
 ## 画像参照の統一
@@ -167,10 +167,10 @@ flowchart LR
 
 ## 実物を確認する
 
-デモサイトで実 DOM を確認できます。
+テンプレートライブラリで実 DOM を確認できます。
 
-- [デモサイト](../demo/index.html)
-- [Markdown デモ](../demo/markdown-demo.html)
-- [AsciiDoc デモ](../build/adoc-qmd/demo/asciidoc-demo.html)
+- [テンプレートライブラリ](templates/index.html)
+- [応用マークダウン（md）](templates/md/advanced.html)
+- [手順書（adoc）](../../adoc-pages/templates/playbook.html)
 
 ブラウザのデベロッパーツールで `h2` の `id` 属性、`#toc` の入れ子、`img` の `src` をそれぞれ確認してください。

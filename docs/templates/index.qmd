@@ -1,0 +1,83 @@
+---
+title: "テンプレートライブラリ"
+---
+
+`.qmd` / `.md` / `.adoc` の**実用雛形**を文書の型ごとに揃えています。気に入った型をコピーして、内容を差し替えるだけで使えます。
+
+すべてのページが同一サイトに統合され、見出し ID・目次・リンク・画像参照が同じルールで正規化されることを**実例として確認**できます。
+
+## フォーマットについて
+
+| フォーマット | 変換経路 | 備考 |
+|---|---|---|
+| `.qmd` | quarto render で直接 HTML 化 | コールアウト・mermaid・コード等が使える |
+| `.md` | quarto render で直接 HTML 化 | シンプルな文書向け |
+| `.adoc` | asciidoctor → HTML → quarto へ統合 | admonition・テーブル等のブロック構文 |
+
+## qmd テンプレート
+
+開発系・運用系・ナレッジ系の雛形です。
+
+| 型 | ページ | 用途 |
+|---|---|---|
+| 基本 | [basic.qmd](qmd/basic.html) | あらゆるページの最小構成 |
+| 手順書 | [playbook.qmd](qmd/playbook.html) | 定期作業・対応手順 |
+| 運用手順 | [runbook.qmd](qmd/runbook.html) | オンコール・アラート対応 |
+| トラブルシューティング | [troubleshooting.qmd](qmd/troubleshooting.html) | 症状 → 原因 → 対処 |
+| API 概要 | [api-overview.qmd](qmd/api-overview.html) | API 全体の設計 |
+| API エンドポイント | [api-endpoint.qmd](qmd/api-endpoint.html) | 1 エンドポイントの仕様 |
+| API スキーマ | [api-schema.qmd](qmd/api-schema.html) | 入出力の型定義 |
+| 設計メモ | [design-doc.qmd](qmd/design-doc.html) | 実装前の設計共有 |
+| 提案書 | [proposal.qmd](qmd/proposal.html) | 変更の提案・承認 |
+| 調査ノート | [research-note.qmd](qmd/research-note.html) | 技術調査の記録 |
+| ハウツー | [how-to.qmd](qmd/how-to.html) | ゴール達成の手順 |
+| FAQ | [faq.qmd](qmd/faq.html) | よくある質問 |
+| オンボーディング | [onboarding.qmd](qmd/onboarding.html) | 新メンバー向け |
+| ブログ記事 | [blog-post.qmd](qmd/blog-post.html) | 読み物記事 |
+| 技術レポート | [report.qmd](qmd/report.html) | 調査・計測の結果 |
+
+## md テンプレート
+
+軽量で書ける型の雛形です。
+
+| 型 | ページ | 用途 |
+|---|---|---|
+| 基本 | [basic.md](md/basic.html) | `.md` の最小構成 |
+| 応用 | [advanced.md](md/advanced.html) | 見出し・リンク・画像を組み合わせた応用 |
+| ADR | [adr.md](md/adr.html) | アーキテクチャ決定記録 |
+| 決定ログ | [decision-log.md](md/decision-log.html) | 日々の決定の時系列記録 |
+| 議事録 | [meeting-notes.md](md/meeting-notes.html) | 会議の記録 |
+| 読書ノート | [reading-notes.md](md/reading-notes.html) | 書籍・記事の記録 |
+| リリースノート | [release-notes.md](md/release-notes.html) | リリースごとの変更 |
+| チェンジログ | [changelog.md](md/changelog.html) | 変更履歴 |
+| 障害報告 | [incident-report.md](md/incident-report.html) | 障害の記録・再発防止 |
+| 週報 | [weekly-report.md](md/weekly-report.html) | 一週間の成果 |
+| 進捗報告 | [status-report.md](md/status-report.html) | ステークホルダー向け現状報告 |
+| 用語集 | [glossary.md](md/glossary.html) | 用語定義の一覧 |
+| チートシート | [cheatsheet.md](md/cheatsheet.html) | 頻出操作の一覧 |
+| 比較検討 | [comparison.md](md/comparison.html) | 選択肢の比較・結論 |
+
+## adoc テンプレート
+
+AsciiDoc のブロック構文を活用する型の雛形です。出力は `adoc-pages/` 配下に統合されます。
+
+| 型 | ページ | 用途 |
+|---|---|---|
+| 基本 | [basic.adoc](../../adoc-pages/templates/basic.html) | AsciiDoc の最小構成 |
+| 手順書 | [playbook.adoc](../../adoc-pages/templates/playbook.html) | 手順書（qmd 版と同じ型） |
+| API 概要 | [api-reference.adoc](../../adoc-pages/templates/api-reference.html) | API 設計（テーブル構文） |
+| 議事録 | [meeting-notes.adoc](../../adoc-pages/templates/meeting-notes.html) | 議事録（qmd 版と同じ型） |
+| チートシート | [cheatsheet.adoc](../../adoc-pages/templates/cheatsheet.html) | admonition・画像ブロックの見本 |
+
+## 統合の確認ポイント
+
+- 各ページの見出しは `pagePrefix-<slug>` 形式の一意な ID を持ちます
+- すべてのページ上部に `#toc` の入れ子目次が生成されます
+- 画像は内容ハッシュ名で `assets/` に集約されます
+- ページをまたぐリンクも自動で解決されます
+
+## 関連
+
+- [チュートリアル](../tutorial.html)
+- [DOM 構造の解説](../dom-structure.html)
+- [ドキュメントトップ](../index.html)

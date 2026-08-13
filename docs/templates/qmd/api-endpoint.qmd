@@ -1,0 +1,63 @@
+---
+title: "API エンドポイント（Endpoint）テンプレート"
+tags: [api]
+---
+
+1 エンドポイントの仕様を定義するページです。リクエスト・レスポンス・エラーを省略なく書きます。
+
+## 概要
+
+`GET /v1/orders/{orderId}` — 注文の詳細を取得します。
+
+| 項目 | 値 |
+|---|---|
+| メソッド | `GET` |
+| パス | `/v1/orders/{orderId}` |
+| 認証 | 必須 |
+| レート制限 | 100 req/min |
+
+## リクエスト
+
+### パスパラメータ
+
+| 名前 | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `orderId` | string | はい | 注文の一意識別子 |
+
+### クエリパラメータ
+
+| 名前 | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `expand` | string | いいえ | 展開するフィールド（`items` など） |
+
+## レスポンス
+
+### 200 OK
+
+```json
+{
+  "id": "ord_123",
+  "status": "paid",
+  "total": 1200,
+  "items": [{ "name": "book", "price": 1200 }]
+}
+```
+
+### 404 Not Found
+
+```json
+{ "error": { "code": "not_found", "message": "order not found" } }
+```
+
+## エラー
+
+| コード | 説明 |
+|---|---|
+| `not_found` | 指定した注文が存在しない |
+| `invalid_request` | パラメータが不正 |
+
+## 関連
+
+- [API 概要](api-overview.html)
+- [スキーマ例](api-schema.html)
+- [テンプレートカタログ](../index.html)
