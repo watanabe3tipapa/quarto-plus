@@ -1,6 +1,6 @@
 {
   "name": "quarto-plus",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "private": true,
   "type": "module",
   "description": "quarto-based multi-format (.md/.qmd/.adoc) documentation site pipeline",

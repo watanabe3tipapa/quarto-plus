@@ -5,7 +5,7 @@
 quarto-plus is a Quarto-based pipeline tool that merges documents written in `.md` / `.qmd` / `.adoc` into a **single static site** and publishes them as validated HTML. It also ships a library of **practical templates** you can copy and use right away.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-blue.svg)](https://github.com/watanabe3tipapa/quarto-plus/releases)
+[![Version](https://img.shields.io/badge/version-v0.3.2-blue.svg)](https://github.com/watanabe3tipapa/quarto-plus/releases)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-blue.svg)](https://watanabe3tipapa.github.io/quarto-plus/)
 [![GitHub](https://img.shields.io/github/issues/watanabe3tipapa/quarto-plus.svg)](https://github.com/watanabe3tipapa/quarto-plus/issues)
 

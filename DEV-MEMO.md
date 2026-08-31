@@ -512,3 +512,27 @@ quarto-plus の本体パイプライン（`.md/.qmd/.adoc` を harmonize して�
 ### 検証時メモ（環境）
 - 本リポジトリに asciidoctor / Jupyter が未導入だったため、`brew install asciidoctor` と venv への `jupyter` 系インストールでビルドを検証した。CI（GitHub Actions）では既に Ruby(asciidoctor) + Node + Quarto を導入済みだが、dashboard の Jupyter 実行要件を満たすための Python/カーネル設定を要検討。なお dashboard は `format: dashboard` で python セルを含むため、**本番ビルドでも Jupyter + matplotlib が必要**。
 
+---
+
+## Phase 18: MDV 参考収録・CI 修正・v0.3.2 確定（2026-09-01）
+
+### 対応
+- **MDV（`.mdv`）の参考収録**（技術的な参考事項として前述）
+  - `docs/templates/mdv/basic.mdv` / `dashboard.mdv`、`docs/reference/mdv.qmd` / `mdv-qmd-comparison.qmd`
+  - カタログ / docs トップ / LP / README（日英）/ DEV-MEMO に案内追記
+- **CI 修正**: `.github/workflows/pages.yml`
+  - `pip install matplotlib numpy` → **`pip install jupyter matplotlib numpy`** に変更
+  - Build site に **`QUARTO_PYTHON: python3`** を env 設定
+  - 背景: Phase 17 で追加した dashboard テンプレートは `format: dashboard` の python セルを持つ。Jupyter 未導入のため CI は **Phase 17 の時点から既に失敗していた**（`No module named 'yaml'` で quarto がカーネルを起動できず）。本プッシュで解消し、GitHub Actions の **Success** と GitHub Pages デプロイを確認。
+- **バージョン**: `0.1.0 → 0.3.0 → **0.3.2**`（v0.3.1 はスキップ。本 Phase の成果を v0.3.2 として確定）
+
+### 整合性を図った箇所
+- `package.json` / `package-lock.json` — `version: 0.3.2`
+- `README.md` / `README_en.md` — Version バッジを `v0.3.0` → `v0.3.2` に更新
+- DEV-MEMO — Phase 16 の「v0.3.0 確定」記録は当時の履歴としてそのまま維持
+
+### 検証
+- ローカル `QUARTO_PYTHON=<venv>/bin/python` で `npm run build:all` 成功、`validate: OK (52 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`、`copy-dist: 170 files`
+- GitHub Actions（Deploy to GitHub Pages）**Success**、GitHub Pages へのデプロイ成功を `gh run` で確認
+
+
