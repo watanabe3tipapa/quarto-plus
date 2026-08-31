@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install python deps
-        run: pip install matplotlib numpy
+        run: pip install jupyter matplotlib numpy
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -48,6 +48,8 @@ jobs:
         run: npm ci
 
       - name: Build site
+        env:
+          QUARTO_PYTHON: python3
         run: npm run build:all
 
       - name: Configure Pages
