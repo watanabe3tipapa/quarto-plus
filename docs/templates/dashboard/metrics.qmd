@@ -1,0 +1,63 @@
+---
+title: "メトリクスダッシュボード（Metrics）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: 重点 KPI
+import matplotlib.pyplot as plt
+kpis = ["売上", "顧客満足", "稼働率", "リード数"]
+current = [92, 84, 99, 78]
+x = range(len(kpis))
+fig, ax = plt.subplots()
+ax.bar(x, current, color="#3498db", label="現在")
+ax.axhline(100, color="#ecf0f1", linewidth=6, label="目標")
+ax.set_xticks(list(x))
+ax.set_xticklabels(kpis)
+ax.set_ylabel("達成率 (%)")
+ax.set_ylim(0, 110)
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 指標トレンド
+import matplotlib.pyplot as plt
+weeks = ["W1", "W2", "W3", "W4"]
+revenue = [80, 92, 88, 105]
+orders = [40, 45, 44, 52]
+fig, ax = plt.subplots()
+ax.plot(weeks, revenue, marker="o", label="売上")
+ax.plot(weeks, orders, marker="s", label="注文数")
+ax.set_ylabel("指標値")
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+複数部門・複数指標を横断的に監視するための画面です。重点 KPI とトレンド、メトリクス一覧を並べます。
+:::
+
+::: {.card title="メトリクス一覧"}
+| メトリクス | 今週 | 閾値 | 判定 |
+|---|---|---|---|
+| 売上 | 105万円 | 100万円 | OK |
+| 注文数 | 52件 | 50件 | OK |
+| 稼働率 | 99.9% | 99.5% | OK |
+| エラー率 | 0.8% | 1.0% | OK |
+| リード数 | 88件 | 80件 | OK |
+:::
+
+::: {.card}
+**使い方**
+
+1. 重点 KPI バーを監視対象の指標に差し替える
+2. トレンドグラフを更新頻度に合わせる
+3. メトリクス表の閾値と判定ロジックを自社基準にする
+- [テンプレートカタログ](../index.html)
+:::

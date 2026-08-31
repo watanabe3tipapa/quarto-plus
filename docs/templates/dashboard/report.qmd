@@ -1,0 +1,61 @@
+---
+title: "定期レポート（Report）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: 期間トレンド
+import matplotlib.pyplot as plt
+weeks = ["W1", "W2", "W3", "W4"]
+metric = [80, 92, 88, 105]
+fig, ax = plt.subplots()
+ax.plot(weeks, metric, marker="o", linewidth=2)
+ax.fill_between(weeks, metric, alpha=0.1)
+ax.set_ylabel("指標値")
+ax.set_xlabel("週")
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 目標達成状況
+import matplotlib.pyplot as plt
+labels = ["達成", "未達成"]
+sizes = [75, 25]
+fig, ax = plt.subplots()
+ax.pie(sizes, labels=labels, autopct="%1.0f%%", startangle=90,
+       colors=["#27ae60", "#c0392b"])
+ax.axis("equal")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+週次・月次の定期レポートを一画面にまとめます。期間トレンドとまとめテキストを並べ、関係者へ共有しやすくします。
+:::
+
+::: {.card title="今期のまとめ"}
+- 主要指標は前期比 **+13%** で目標（+10%）を上回った
+- コスト面ではレンタル費用の見直しにより 5% 削減
+- 次期は新規チャネルへの投資を優先する
+:::
+
+::: {.card title="指標一覧"}
+| 指標 | 今期 | 前比 |
+|---|---|---|
+| 売上 | 172万円 | +13% |
+| 顧客数 | 8,420人 | +5% |
+| 満足度 | 4.2/5 | +0.1 |
+| コスト | 38万円 | -5% |
+:::
+
+::: {.card}
+**使い方**
+
+1. トレンドと達成率グラフを実績に差し替える
+2. まとめ・指標表を期間実績にする
+- [テンプレートカタログ](../index.html)
+:::

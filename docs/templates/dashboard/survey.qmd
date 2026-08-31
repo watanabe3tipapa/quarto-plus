@@ -1,0 +1,55 @@
+---
+title: "アンケート結果（Survey）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: 回答者属性
+import matplotlib.pyplot as plt
+labels = ["20代", "30代", "40代", "50代以上"]
+sizes = [25, 40, 25, 10]
+fig, ax = plt.subplots()
+ax.pie(sizes, labels=labels, autopct="%1.0f%%", startangle=90)
+ax.axis("equal")
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 満足度分布
+import matplotlib.pyplot as plt
+scores = ["1", "2", "3", "4", "5"]
+counts = [5, 12, 48, 80, 55]
+fig, ax = plt.subplots()
+ax.bar(scores, counts, color="#2ecc71")
+ax.set_xlabel("満足度（5段階）")
+ax.set_ylabel("回答数")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+アンケート結果を集計・可視化する一画面です。回答者属性・満足度分布を並べ、フィードバックを俯瞰します。
+:::
+
+::: {.card title="設問別平均（5点満点）"}
+| 設問 | 平均 |
+|---|---|
+| 総合満足度 | 4.0 |
+| 使いやすさ | 4.2 |
+| 情報量 | 3.8 |
+| デザイン | 4.1 |
+| 速度 | 3.9 |
+:::
+
+::: {.card}
+**使い方**
+
+1. 回答者属性の比率を実際の回答分布に合わせる
+2. 満足度分布を集計結果に差し替える
+3. 設問別平均をアンケートの質問に対応させる
+- [テンプレートカタログ](../index.html)
+:::

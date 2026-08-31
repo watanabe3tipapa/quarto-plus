@@ -1,0 +1,65 @@
+---
+title: "プロジェクト進捗（Project）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: タスク消化状況
+import matplotlib.pyplot as plt
+status = ["未着手", "進行中", "レビュー", "完了"]
+n = [4, 8, 5, 12]
+fig, ax = plt.subplots()
+bars = ax.bar(status, n, color=["#e74c3c", "#f39c12", "#3498db", "#27ae60"])
+ax.set_ylabel("タスク数")
+for b, v in zip(bars, n):
+    ax.text(b.get_x() + b.get_width() / 2, v + 0.2, str(v), ha="center")
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: マイルストーン進捗
+import matplotlib.pyplot as plt
+ms = ["フェーズ1", "フェーズ2", "フェーズ3", "フェーズ4"]
+rate = [100, 75, 40, 0]
+fig, ax = plt.subplots()
+ax.barh(ms, rate, color="#3498db")
+ax.set_xlabel("進捗 (%)")
+ax.set_xlim(0, 100)
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+プロジェクトの進捗状況を一画面で管理します。タスク消化・マイルストーン・リスクを並べ、プロジェクト全体を俯瞰します。
+:::
+
+::: {.card title="タスク一覧"}
+| 状態 | 件数 |
+|---|---|
+| 完了 | 12 |
+| レビュー | 5 |
+| 進行中 | 8 |
+| 未着手 | 4 |
+:::
+
+::: {.card title="リスクと対応"}
+| リスク | 影響度 | 発生確率 | 対応策 |
+|---|---|---|---|
+| 要員不足 | 高 | 低 | 増員候補の確保 |
+| 仕様変更 | 中 | 中 | 変更管理の徹底 |
+| 納期遅延 | 高 | 中 | バッファ確保 |
+| 品質低下 | 中 | 低 | テスト強化 |
+:::
+
+::: {.card}
+**使い方**
+
+1. タスク消化グラフをプロジェクトのタスク配分に合わせる
+2. マイルストーン進捗を実際の計画に差し替える
+3. タスク・リスク表をプロジェクト固有の内容にする
+- [テンプレートカタログ](../index.html)
+:::

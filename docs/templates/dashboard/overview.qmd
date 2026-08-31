@@ -1,0 +1,56 @@
+---
+title: "KPI オーバービュー（Overview）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: 月次売上と利益
+import matplotlib.pyplot as plt
+months = ["1月", "2月", "3月", "4月"]
+revenue = [120, 150, 138, 172]
+profit = [30, 42, 36, 55]
+fig, ax = plt.subplots()
+ax.plot(months, revenue, marker="o", label="売上")
+ax.plot(months, profit, marker="s", label="利益")
+ax.set_ylabel("万円")
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 売上構成比
+import matplotlib.pyplot as plt
+labels = ["Web", "iOS", "Android", "その他"]
+sizes = [40, 30, 20, 10]
+fig, ax = plt.subplots()
+ax.pie(sizes, labels=labels, autopct="%1.0f%%", startangle=90)
+ax.axis("equal")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+ビジネス指標（KPI）の現状をひと目で把握する一画面です。売上・ユーザー数・利益率などの主要指標をグラフと表で並べます。
+:::
+
+::: {.card title="主要 KPI"}
+| 指標 | 今月 | 前月比 |
+|---|---|---|
+| 月間売上 | 172万円 | +13% |
+| ユーザー数 | 8,420人 | +5% |
+| 平均単価 | 2,040円 | +3% |
+| 売上達成率 | 96% | -2% |
+:::
+
+::: {.card}
+**使い方**
+
+1. 上部グラフのデータを実際の売上・利益・構成比に差し替える
+2. 下部の KPI 表を自社指標に合わせて編集する
+3. `quarto render` で静的 HTML として公開
+- [テンプレートカタログ](../index.html)
+:::

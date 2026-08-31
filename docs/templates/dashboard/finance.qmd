@@ -1,0 +1,58 @@
+---
+title: "財務ダッシュボード（Finance）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: 売上と費用の推移
+import matplotlib.pyplot as plt
+months = ["4月", "5月", "6月", "7月", "8月", "9月"]
+revenue = [150, 160, 155, 172, 180, 195]
+cost = [110, 115, 118, 120, 125, 130]
+fig, ax = plt.subplots()
+ax.plot(months, revenue, marker="o", label="売上")
+ax.plot(months, cost, marker="s", label="費用", color="#c0392b")
+ax.set_ylabel("万円")
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 費用の内訳
+import matplotlib.pyplot as plt
+labels = ["人件費", "広告", "ツール", "その他"]
+sizes = [55, 20, 15, 10]
+fig, ax = plt.subplots()
+ax.pie(sizes, labels=labels, autopct="%1.0f%%", startangle=90)
+ax.axis("equal")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+売上・費用・利益の財務状況を一画面で可視化します。月次推移と損益の概要を並べます。
+:::
+
+::: {.card title="損益サマリ"}
+| 項目 | 金額（万円） |
+|---|---|
+| 売上 | 195 |
+| 売上原価 | 78 |
+| 粗利益 | 117 |
+| 営業費用 | 52 |
+| 営業利益 | 65 |
+| 利益率 | 33% |
+:::
+
+::: {.card}
+**使い方**
+
+1. 売上・費用の月次推移を実績データに差し替える
+2. 費用内訳を比率に合わせて修正する
+3. 損益サマリを月次決算の実数にする
+- [テンプレートカタログ](../index.html)
+:::

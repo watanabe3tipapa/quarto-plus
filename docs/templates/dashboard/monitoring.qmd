@@ -1,0 +1,58 @@
+---
+title: "運用監視（Monitoring）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: サービス稼働率（24時間）
+import matplotlib.pyplot as plt
+hours = list(range(0, 24))
+uptime = [99.9, 99.8, 99.7, 99.9, 100.0, 99.9, 99.6, 99.5, 99.8, 100.0,
+          99.9, 99.7, 99.8, 100.0, 99.9, 99.8, 99.9, 99.7, 99.6, 99.8,
+          99.9, 100.0, 99.9, 99.8]
+fig, ax = plt.subplots()
+ax.plot(hours, uptime, marker="o")
+ax.axhline(99.5, color="red", linestyle="--", label="SLO 下限")
+ax.set_ylabel("稼働率 (%)")
+ax.set_xlabel("時刻 (時)")
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: エラー件数（サービス別）
+import matplotlib.pyplot as plt
+services = ["API", "Web", "DB", "バッチ"]
+errors = [12, 5, 3, 8]
+fig, ax = plt.subplots()
+ax.bar(services, errors, color="#e74c3c")
+ax.set_ylabel("エラー件数")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+システム稼働状況を一覧する運用監視画面です。稼働率・エラー件数とアラート一覧を並べ、異常を素早く検知します。
+:::
+
+::: {.card title="アクティブなアラート"}
+| 重要度 | 対象 | 内容 | 状態 |
+|---|---|---|---|
+| High | API | 応答遅延 5s 超 | 監視中 |
+| Medium | DB | 接続数 80% | 監視中 |
+| High | バッチ | 失敗ジョブ 3 件 | 対応中 |
+| Low | Web | キャッシュ劣化 | 調査中 |
+:::
+
+::: {.card}
+**使い方**
+
+1. 稼働率グラフのデータをモニタリング実績に差し替える
+2. エラー件数を対象サービスに合わせて修正する
+3. アラート表を監視ツールの出力に置き換える
+- [テンプレートカタログ](../index.html)
+:::

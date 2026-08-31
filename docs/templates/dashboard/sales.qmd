@@ -1,0 +1,55 @@
+---
+title: "営業ダッシュボード（Sales）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: パイプライン
+import matplotlib.pyplot as plt
+stages = ["リード", "商談", "見積", "交渉", "成約"]
+counts = [120, 70, 45, 25, 15]
+fig, ax = plt.subplots()
+ax.bar(stages, counts, color="#3498db")
+ax.set_ylabel("件数")
+for i, v in enumerate(counts):
+    ax.text(i, v + 2, str(v), ha="center")
+plt.tight_layout()
+fig
+```
+
+```{python}
+#| title: 月次成約額
+import matplotlib.pyplot as plt
+months = ["4月", "5月", "6月", "7月", "8月", "9月"]
+amount = [300, 450, 380, 520, 610, 580]
+fig, ax = plt.subplots()
+ax.plot(months, amount, marker="o")
+ax.set_ylabel("万円")
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+営業活動の進捗と成果を一画面で把握します。パイプライン・成約額・担当別実績を並べ、商談状況を見える化します。
+:::
+
+::: {.card title="担当者別実績"}
+| 担当 | 商談数 | 成約数 | 成約率 |
+|---|---|---|---|
+| 田中 | 18 | 7 | 39% |
+| 佐藤 | 15 | 6 | 40% |
+| 鈴木 | 22 | 9 | 41% |
+| 高橋 | 10 | 4 | 40% |
+:::
+
+::: {.card}
+**使い方**
+
+1. パイプラインのステージを自社の商談フローに合わせる
+2. 月次成約額を実績に差し替える
+3. 担当者表を月次レポートの実数にする
+- [テンプレートカタログ](../index.html)
+:::

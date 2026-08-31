@@ -27,7 +27,17 @@
     "StatusReport":      { "headings": [] },
     "Glossary":          { "headings": [] },
     "Cheatsheet":        { "headings": [] },
-    "Comparison":        { "headings": ["比較対象", "観点", "結果"] }
+    "Comparison":        { "headings": ["比較対象", "観点", "結果"] },
+    "DashboardOverview":     { "headings": [] },
+    "DashboardDataExplorer": { "headings": [] },
+    "DashboardMonitoring":   { "headings": [] },
+    "DashboardReport":       { "headings": [] },
+    "DashboardComparison":   { "headings": [] },
+    "DashboardFinance":      { "headings": [] },
+    "DashboardSales":        { "headings": [] },
+    "DashboardProject":      { "headings": [] },
+    "DashboardSurvey":       { "headings": [] },
+    "DashboardMetrics":      { "headings": [] }
   },
   "templates": {
     "docs/templates/qmd/basic.qmd":             "Basic",
@@ -63,6 +73,16 @@
     "adoc/templates/playbook.adoc":             "Playbook",
     "adoc/templates/api-reference.adoc":        "ApiOverview",
     "adoc/templates/meeting-notes.adoc":        "MeetingNotes",
-    "adoc/templates/cheatsheet.adoc":           "Cheatsheet"
+    "adoc/templates/cheatsheet.adoc":           "Cheatsheet",
+    "docs/templates/dashboard/overview.qmd":     "DashboardOverview",
+    "docs/templates/dashboard/data-explorer.qmd": "DashboardDataExplorer",
+    "docs/templates/dashboard/monitoring.qmd":   "DashboardMonitoring",
+    "docs/templates/dashboard/report.qmd":       "DashboardReport",
+    "docs/templates/dashboard/comparison.qmd":   "DashboardComparison",
+    "docs/templates/dashboard/finance.qmd":      "DashboardFinance",
+    "docs/templates/dashboard/sales.qmd":        "DashboardSales",
+    "docs/templates/dashboard/project.qmd":      "DashboardProject",
+    "docs/templates/dashboard/survey.qmd":       "DashboardSurvey",
+    "docs/templates/dashboard/metrics.qmd":      "DashboardMetrics"
   }
 }

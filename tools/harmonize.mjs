@@ -82,6 +82,10 @@ async function mirrorNonHtmlAssets() {
   console.log(`harmonize: mirrored ${copied} non-html assets`);
 }
 
+function isDashboardPage(siteRel) {
+  return siteRel.includes("/dashboard/");
+}
+
 async function main() {
   const mode = tocModeFromArgs(process.argv.slice(2));
   const dict = loadDict();
@@ -117,6 +121,13 @@ async function main() {
     const html = await fs.readFile(record.absHtml, "utf8");
     const $ = cheerio.load(html);
     const { meta, idMap } = record;
+
+    if (isDashboardPage(record.siteRel)) {
+      const outAbs = path.join(HARMONIZED_DIR, record.siteRel);
+      await fs.mkdir(path.dirname(outAbs), { recursive: true });
+      await fs.writeFile(outAbs, html);
+      continue;
+    }
 
     if (meta.length === 0) {
       const outAbs = path.join(HARMONIZED_DIR, siteRel);
@@ -189,7 +200,8 @@ async function main() {
         if (!tocNode) tocNode = createOwnToc($);
       }
     } else {
-      tocNode = await findExistingToc($);
+      removeExistingTocs($);
+      tocNode = null;
     }
 
     if (tocNode) tocNode.html(renderTocNested(headings));

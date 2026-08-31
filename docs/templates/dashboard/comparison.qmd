@@ -1,0 +1,51 @@
+---
+title: "比較分析（Comparison）テンプレート"
+format: dashboard
+---
+## Row {height=55%}
+
+```{python}
+#| title: オプション別スコア
+import matplotlib.pyplot as plt
+import numpy as np
+categories = ["価格", "機能", "性能", "サポート"]
+opt_a = [90, 70, 80, 75]
+opt_b = [60, 90, 85, 80]
+opt_c = [75, 80, 70, 90]
+x = np.arange(len(categories))
+fig, ax = plt.subplots()
+ax.bar(x - 0.25, opt_a, 0.25, label="Option A", color="#3498db")
+ax.bar(x,       opt_b, 0.25, label="Option B", color="#2ecc71")
+ax.bar(x + 0.25, opt_c, 0.25, label="Option C", color="#e67e22")
+ax.set_xticks(x)
+ax.set_xticklabels(categories)
+ax.set_ylabel("スコア")
+ax.legend()
+plt.tight_layout()
+fig
+```
+
+## Row {height=20%}
+
+::: {.card title="利用シーン"}
+複数の選択肢・製品・施策を並べて比較するための画面です。並列グラフと比較表で、長所短所を対比します。
+:::
+
+::: {.card title="比較表"}
+| 観点 | Option A | Option B | Option C |
+|---|---|---|---|
+| 機能 | 豊富 | 標準 | 少なめ |
+| 性能 | 標準 | 高速 | 高速 |
+| コスト | 高額 | 中程度 | 低価格 |
+| サポート | 手厚い | 標準 | 標準 |
+| 導入難易度 | 低 | 低 | 高 |
+:::
+
+::: {.card}
+**使い方**
+
+1. グループ化バーグラフのデータを比較対象に差し替える
+2. 比較表の観点と評価を実際のリサーチ結果にする
+3. 結論（推奨案）をカードに追記する
+- [テンプレートカタログ](../index.html)
+:::
