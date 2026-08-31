@@ -1,0 +1,112 @@
+---
+title: "MDV（Markdown Data & Visualization）とは"
+---
+
+MDV（Markdown Data & Visualization）は、[drasimwagan/mdv](https://github.com/drasimwagan/mdv) が提供する**オープンソースの Markdown スーパーセット**です。1 つの `.mdv` ファイル（コモンマーク + 4 つの拡張）から、チャート・KPI カード・テーブルを含む**セルフコンテナの HTML / PDF** を生成できます。
+
+これは quarto-plus のパイプライン（`.qmd` / `.md` / `.adoc`）とは**別系統**の仕組みです。quarto-plus では**常用しません**が、Markdown 単体でレポートやダッシュボードを独立に作りたい場合の**参考**として、`.mdv` の存在と導入手順をここに記します。
+
+## なぜ参考にしているのか
+
+quarto-plus は「書くときは自由、届けるときはひとつ」という思想で、`.md` / `.qmd` / `.adoc` を単一サイトへ統合します。一方 MDV は「**1 ファイルから自己完結した HTML/PDF**」を志向しており、サイト統合ではなく**単体成果物の生成**に強みがあります。
+
+- 用途が近いため、知っておくと選択肢が広がる
+- チャートや KPI を Markdown だけで書ける軽量さがある
+- ただし quarto-plus の見出し ID・目次・アセット集約・検証とは統合されない
+
+## 導入（ローカル実行）
+
+MDV コマンドラインは npm レジストリに未公開のため、GitHub から取得してローカルビルドします。Node.js >= 20 が必要です（本リポジトリと同じ要件）。
+
+```bash
+# 1. リポジトリを取得
+git clone https://github.com/drasimwagan/mdv.git
+cd mdv
+
+# 2. 依存をインストール＆ビルド
+npm install
+npm run build
+```
+
+CLI は次のように呼び出せます（`alias mdv="node $PWD/packages/mdv-cli/dist/index.js"` などで短縮可能です）。
+
+```bash
+# HTML を生成（ソースの隣に <name>.html を出力）
+node packages/mdv-cli/dist/index.js render report.mdv
+
+# ライブリロード付きプレビュー
+node packages/mdv-cli/dist/index.js preview report.mdv --port 3000
+
+# PDF を生成（初回は headless Chromium のダウンロードあり、約180MB）
+node packages/mdv-cli/dist/index.js export report.mdv --pdf
+
+# バージョン確認
+node packages/mdv-cli/dist/index.js version
+```
+
+## `.mdv` の書き方
+
+`.mdv` は CommonMark + 4 つの拡張です。有効な `.md` はすべて有効な `.mdv` でもあります。
+
+### 1. front-matter（任意）
+
+YAML でタイトル・テーマ・名前付きデータセット・名前付きスタイルを指定できます。
+
+```yaml
+---
+title: Q1 Report
+theme: report     # minimal | report | slide
+data:
+  sales: ./data/sales.csv
+---
+```
+
+### 2. ビジュアライズ用フェンスブロック
+
+````
+```chart type=bar x=region y=sales title="Revenue"
+region, sales
+North, 120
+South, 95
+```
+
+```table
+region, sales
+North, 120
+```
+
+```stat
+label, value, delta
+Revenue, $2.06M, +14%
+```
+````
+
+対応ブロック: `chart`（bar / line / pie）、`table`、`stat`。
+
+### 3. `:::` コンテナ
+
+- `::: toc` — 見出しから目次を自動生成
+- `::: columns` / `::: col` — 2 カラムのレイアウト
+- `::: <名前付きスタイル>` — front-matter の `styles:` を適用
+
+### 4. グレースフルデグラデーション
+
+`.mdv` を普通の Markdown ビューアで開いても、チャートはコードブロックとして表示されるため壊れません。
+
+## 制約（v1 の非目標）
+
+- 対話性は `<title>` のホバーツールチップのみ（フィルタ・スライサ・ドリルダウンは非対応）
+- データの変換（集計・並べ替え・計算）は非対応
+- リモートデータ（URL・API・DB）は非対応
+- 散布図・面グラフ・積み上げ棒・ヒートマップなどは未対応
+
+## サンプル
+
+- [基本の MDV ページ](../templates/mdv/basic.mdv)
+- [MDV ダッシュボード（フル構成）](../templates/mdv/dashboard.mdv)
+- [.mdv と .qmd の詳細比較](mdv-qmd-comparison.html)
+
+## 関連
+
+- [テンプレートライブラリ](../templates/index.html)
+- [チュートリアル](../tutorial.html)

@@ -1,0 +1,51 @@
+---
+title: 基本の MDV ページ
+theme: minimal
+---
+
+# 基本の MDV ページ
+
+MDV（Markdown Data & Visualization）は、標準 Markdown に「データとビジュアライズ」の
+4 つの拡張を加えた形式です。`.mdv` ファイルをエクスポートすると、チャート・KPI カード・
+テーブルを含む**セルフコンテナ HTML / PDF** が 1 ファイルで生成されます。
+
+## KPI カード
+
+```stat
+label, value, delta
+調査回答数, 25, +3
+完了率, 62%, +6
+解約率, 2.1%, -0.4%
+```
+
+## 棒グラフ
+
+```chart type=bar x=region y=revenue yFormat=thousands title="地域別売上"
+region, revenue
+北, 595000
+南, 475000
+東, 360000
+西, 635000
+```
+
+## テーブル
+
+```table
+region, q1, q2, q3, q4, total
+北, 120, 140, 160, 175, 595
+南, 90, 110, 130, 145, 475
+```
+
+## 折れ線グラフ
+
+```chart type=line x=month y=rate yFormat=percent points title="コンバージョン率"
+month, rate
+1月, 0.032
+2月, 0.041
+3月, 0.053
+```
+
+## メモ
+
+MDV は quarto-plus のパイプライン（`.qmd` / `.md` / `.adoc`）とは**別系統**のツールです。
+常用せず、Markdown でレポートやダッシュボードを独立に作る場合の参考として使います。

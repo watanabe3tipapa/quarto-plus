@@ -1,0 +1,114 @@
+---
+title: MDV ダッシュボード（フル構成の参考）
+theme: report
+styles:
+  summary:
+    background: "#faf4e8"
+    padding: large
+    radius: medium
+---
+
+# MDV ダッシュボード（フル構成の参考）
+
+複数のチャート・KPI・レイアウトを 1 つの `.mdv` ファイルに収めた、MDV の機能全体を示す参考例です。
+
+::: toc
+:::
+
+## 主要指標
+
+::: columns
+
+::: col
+
+::: kpi
+
+### $2.06M
+
+今期の売上合計
+
+:::
+
+:::
+
+::: col
+
+::: kpi
+
+### +14%
+
+前年比成長
+
+:::
+
+:::
+
+::: col
+
+::: kpi
+
+### 62
+
+NPS（ネットプロモータースコア）
+
+:::
+
+:::
+
+:::
+
+## 収益トレンド
+
+```chart type=line x=month y=revenue series=region points title="月次収益（地域別）"
+month, revenue, region
+1月, 120, 北
+2月, 140, 北
+3月, 160, 北
+1月, 90, 南
+2月, 110, 南
+3月, 130, 南
+```
+
+## 地域別の内訳
+
+```chart type=bar x=region y=total title="Q1 合計（地域別）"
+region, total
+北, 595
+南, 475
+東, 360
+西, 635
+```
+
+## 製品構成
+
+```chart type=pie label=product value=share donut title="製品構成比"
+product, share
+Alpha, 45
+Beta, 30
+Gamma, 15
+Delta, 10
+```
+
+## 生データ
+
+```table
+product, share
+Alpha, 45
+Beta, 30
+Gamma, 15
+Delta, 10
+```
+
+## 要約
+
+::: summary
+
+全 4 地域で **計画通り** に推移しました。北・西地域が成長を牽引し、東地域には改善の余地があります。
+製品構成は安定しており、*Alpha* が 45% のシェアで首位を維持しています。
+
+:::
+
+## 参考
+
+- [MDV の紹介と導入方法](../../reference/mdv.html)
+- [テンプレートカタログ](../index.html)

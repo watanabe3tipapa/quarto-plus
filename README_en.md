@@ -54,6 +54,7 @@ This tool does not just build — it checks that things are **correctly assemble
 - Aggregates images under content-hash names `assets/<sha>-<basename>` and rewrites reference paths
 - Resolves cross-page anchors (with the same fallback for quarto / asciidoctor origins)
 - **34 practical templates** (15 `.qmd` / 14 `.md` / 5 `.adoc`) plus a catalog page
+- **MDV (`.mdv`) included as a reference** for a separate mechanism (self-contained charts in Markdown; not for regular use — see [What is MDV (reference)](docs/reference/mdv.html))
 - Registry-driven validation: `tools/doc-types.json` is the source of truth driving required-heading checks
 - Regenerates `search.json` after harmonize to prevent broken site-search links
 - Automatic GitHub Pages deployment via GitHub Actions
@@ -111,6 +112,7 @@ The repository ships **34 practical templates** under `docs/templates/`. Copy th
 | `.qmd` | 15 | Playbook / Runbook / API Reference / Design Doc / Proposal / FAQ / Research Note / Report |
 | `.md` | 14 | Meeting Notes / ADR / Release Notes / Incident Report / Glossary / Cheatsheet / Comparison |
 | `.adoc` | 5 | Playbook / API Reference / Meeting Notes / Cheatsheet |
+| `.mdv` (reference) | 2 | Basic / Dashboard (separate mechanism, not for regular use) |
 
 ## Documentation
 

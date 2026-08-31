@@ -42,6 +42,7 @@ quarto-plus は書き手の選択を尊重し、公開時に見出し ID・目�
 - 画像を内容ハッシュ名 `assets/<sha>-<basename>` で集約し、参照を自動書換
 - クロスページアンカーを解決し、Quarto と Asciidoctor 起源の参照を揃えるフォールバックを実装
 - 34 種の実用雛形（テンプレートライブラリ）を同梱（`.qmd` 15 / `.md` 14 / `.adoc` 5）
+- 別系統の仕組み **MDV（`.mdv`）** の参考収録（Markdown 単体でチャート入り HTML/PDF を生成。常用せず）
 - 検証はレジストリ（tools/doc-types.json）駆動
 - harmonize 後に `search.json` を再生成してサイト内検索のリンク切れを防止
 - GitHub Actions による GitHub Pages への自動デプロイ（リポジトリ設定に依存）
@@ -99,6 +100,7 @@ quarto render ┘
 `docs/templates/` に 34 種類の雛形を同梱しています。雛形はそのままコピーして内容を差し替えるだけで利用できます。一覧はテンプレートカタログで確認してください。
 
 - フォーマット別収録数: `.qmd` 15 / `.md` 14 / `.adoc` 5
+- **MDV（`.mdv`）を別系統の仕組みとして参考収録**（Markdown 単体のチャート入りレポート用。常用しません。導入方法は [MDV とは（参考）](docs/reference/mdv.html) を参照）
 - テンプレートカタログ: https://watanabe3tipapa.github.io/quarto-plus/docs/templates/index.html
 
 ## ドキュメント

@@ -22,6 +22,11 @@ async function loadIds(fileAbs) {
   const ids = new Set();
   const dup = new Set();
   $("[id]").each((_, el) => {
+    const tag = el.tagName;
+    // <link id> はリソース読み込みタグの識別子であり、同一ページに
+    // quarto が複数出力することがある（例: dashboard の Bootstrap/ハイライト CSS）。
+    // アンカーリンクの対象ではないため、重複ID検査の対象から除外する。
+    if (tag === "link") return;
     const id = $(el).attr("id");
     if (!id) return;
     if (ids.has(id)) dup.add(id);

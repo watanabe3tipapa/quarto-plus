@@ -69,6 +69,17 @@ AsciiDoc のブロック構文を活用する型の雛形です。出力は `ado
 | 議事録 | [meeting-notes.adoc](../../adoc-pages/templates/meeting-notes.html) | 議事録（qmd 版と同じ型） |
 | チートシート | [cheatsheet.adoc](../../adoc-pages/templates/cheatsheet.html) | admonition・画像ブロックの見本 |
 
+## mdv テンプレート（参考）
+
+以下は quarto-plus のパイプラインとは**別系統**の仕組みです。quarto-plus では常用しませんが、Markdown 単体でチャート・KPI・テーブルを持つ自己完結 HTML/PDF を生成したい場合の**参考**として収録しています。
+
+| 型 | ファイル | 用途 |
+|---|---|---|
+| 基本 | [basic.mdv](mdv/basic.mdv) | MDV の最小構成（KPI・棒・折れ線・テーブル） |
+| ダッシュボード | [dashboard.mdv](mdv/dashboard.mdv) | chart / stat / table / columns を組み合わせたフル構成 |
+
+MDV の導入手順・書き方・制約は [MDV とは（参考）](../reference/mdv.html) を参照してください。また、`.mdv` と `.qmd` の使い分けは [.mdv と .qmd の詳細比較](../reference/mdv-qmd-comparison.html) を参照してください。
+
 ## 統合の確認ポイント
 
 - 各ページの見出しは `pagePrefix-<slug>` 形式の一意な ID を持ちます

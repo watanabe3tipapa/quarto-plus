@@ -476,3 +476,39 @@ LP は「チュートリアルとしての立ち位置」に簡素化し、本�
 
 ### 検証
 - `npm run build:all` 成功（v0.3.0）、`validate: OK (40 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`
+
+---
+
+## 技術的な参考事項: MDV（.mdv）の参考収録（2026-09-01）
+
+### 背景・趣旨
+quarto-plus の本体パイプライン（`.md/.qmd/.adoc` を harmonize して単一サイトへ統合）とは**別系統**の仕組みとして、[drasimwagan/mdv](https://github.com/drasimwagan/mdv)（Markdown スーパーセットでチャート・KPI・テーブル入りの自己完結 HTML/PDF を生成するツール）の存在を**参考**として同梱した。**常用しない**ことを明示し、「こういう仕組みもある」という知見提供を目的とする。
+
+### 対応
+- `docs/templates/mdv/basic.mdv` / `dashboard.mdv` — 参考用 `.mdv` テンプレート（chart / stat / table / `:::` コンテナ / columns の見本）
+- `docs/reference/mdv.qmd` — MDV の紹介・ローカル導入手順・制約の解説（参考）
+- `docs/reference/mdv-qmd-comparison.qmd` — `.mdv` と `.qmd` の詳細比較（設計思想・構文・機能・用途）を Quarto 化
+- 導線: テンプレートカタログ / docs トップ / LP / README（日英）に MDV の参考案内を追記
+
+### 技術ポイント
+- **mdv は npm レジストリ未公開**。導入は GitHub clone → `npm install` → `npm run build` → `node packages/mdv-cli/dist/index.js render <file>.mdv`（`render` / `preview` / `export --pdf` / `version`）。Node >= 20 が必要（本リポジトリと同じ要件）。
+- **`.mdv` は quarto の render 対象拡張子ではない**ため、`docs/` 配下に置いても render されない。ただし `build/site-harmonized` を通るため `dist/` へ静的ファイルとしてコピーされる（カタログから `mdv/basic.mdv` へのリンクが機能する）。
+
+### Quarto でのコード例表示の罠（比較ページの実装で踏んだ）
+- **` ```{python} `（中括弧付き）は、外側のコードフェンス（3/4バックティック、`text`/`markdown` 言語）内にネストしても quarto が再帰的に実行ブロックと解釈し、Jupyter カーネルを起動する**。`eval: false` でもカーネル初期化を試みるため、Jupyter 未導入環境では render が失敗する。
+- 回避策: 表示用のコード例では `{python}` の**中括弧を外して ` ```python ` `（角括弧なし）**にする。` ```python ` ` ` は実行されない表示専用のコードブロックとして扱われる（`Jupyter 不要で render 成功`）。
+
+### 既存問題の修正: dashboard 由来の validate エラー
+- Phase 17 で追加された dashboard テンプレートは、quarto 出力で同一 `id="quarto-bootstrap"` / `id="quarto-text-highlighting-styles"` を持つ **`<link>` 要素を1ページに複数出力**する（light/dark CSS + 重複）。
+- そのため `tools/validate.mjs` の重複ID検査が誤検出し、`build:all` が失敗していた。**この環境では Jupyter 未導入のため dashboard ページの render が従来失敗しており、Phase 17 後に validate が通るか検証されていなかった**。
+- 対応: `loadIds` で **`<link id>` を重複ID検査の対象から除外**（`<link>` はリソース読み込みタグの識別子でアンカー対象ではないため、重複しても実害なし）。
+
+### 検証
+- `QUARTO_PYTHON=<venv>/bin/python`（jupyter + matplotlib + pandas を入れた venv）で `npm run build:all` 成功。
+- `validate: OK (52 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`、`copy-dist: 170 files -> dist/`
+- `dist/docs/reference/mdv.html` / `mdv-qmd-comparison.html` と `dist/docs/templates/mdv/*.mdv` の出力を確認。
+- 比較ページ・MDV 紹介ページは Jupyter 不要で単独 render 成功（コード例を ` ```python ` ` 表記にしたため）。
+
+### 検証時メモ（環境）
+- 本リポジトリに asciidoctor / Jupyter が未導入だったため、`brew install asciidoctor` と venv への `jupyter` 系インストールでビルドを検証した。CI（GitHub Actions）では既に Ruby(asciidoctor) + Node + Quarto を導入済みだが、dashboard の Jupyter 実行要件を満たすための Python/カーネル設定を要検討。なお dashboard は `format: dashboard` で python セルを含むため、**本番ビルドでも Jupyter + matplotlib が必要**。
+
