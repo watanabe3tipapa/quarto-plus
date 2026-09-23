@@ -4,7 +4,13 @@ format:
   html:
     css: themes/lp.css
     toc: false
+    include-in-header: themes/lp-head.html
 ---
+
+<header class="lp-masthead">
+  <span class="lp-brand">quarto-plus</span>
+  <span class="lp-tag">v0.3.3 · md / qmd / adoc</span>
+</header>
 
 <div class="hero">
   <h1 class="hero-title">quarto-plus</h1>
@@ -12,11 +18,28 @@ format:
     `.md` / `.qmd` / `.adoc` を横断する quarto ベースのドキュメント統合パイプライン
   </p>
   <div class="hero-cta">
-    <a class="btn btn-primary" href="docs/tutorial.html">チュートリアル</a>
-    <a class="btn btn-outline-light" href="docs/templates/index.html">テンプレート一覧</a>
-    <a class="btn btn-outline-light" href="docs/dom-structure.html">DOM 構造の解説</a>
+    <a class="btn" href="docs/tutorial.html">チュートリアル</a>
+    <a class="btn btn-ghost" href="docs/templates/index.html">テンプレート一覧</a>
+    <a class="btn btn-ghost" href="docs/dom-structure.html">DOM 構造の解説</a>
   </div>
 </div>
+
+<nav class="lp-nav">
+  <a href="docs/tutorial.html">Tutorial</a>
+  <a href="docs/templates/index.html">Templates</a>
+  <a href="docs/index.html">Docs</a>
+  <a href="docs/reference/colab-guide.html">Colab Guide</a>
+</nav>
+
+## Colab で Quarto をはじめる
+
+環境構築なしで Quarto を試したい場合は、次のボタンから**自分の Google Colab** で Quarto テンプレートノートブックを開けます。ノートブック内のセルを順に実行するだけで、`.qmd` / `.ipynb` の作成・レンダリングをブラウザ上で体験できます。
+
+<div class="colab-open">
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb)
+</div>
+
+詳しい手順は [Google Colab で Quarto を使いまくる完全ガイド](docs/reference/colab-guide.html) を参照してください。
 
 ## このサイトの読み方
 
@@ -36,7 +59,10 @@ format:
 | `.md` | 14型 | 議事録 / リリースノート / 障害報告 / 用語集 |
 | `.adoc` | 5型 | 手順書 / API仕様 / チートシート |
 
-さらに **MDV（`.mdv`）** を、パイプラインとは別系統の仕組みとして**参考**収録しています。Markdown 単体でチャート・KPI カード・テーブルを持つ自己完結 HTML/PDF を生成するものです（常用しません）。詳細は [MDV とは（参考）](docs/reference/mdv.html) を参照してください。
+参考として、別系統の仕組みや外部環境での活用法もまとめています。
+
+- [Google Colab で Quarto を使いまくる完全ガイド](docs/reference/colab-guide.html) — Colab 上で Quarto CLI をインストールし `.qmd` / `.ipynb` をレンダリングする実践テクニック集
+- **MDV（`.mdv`）** — パイプラインとは別系統の仕組みです。Markdown 単体でチャート・KPI カード・テーブルを持つ自己完結 HTML/PDF を生成するものです（常用しません）。詳細は [MDV とは（参考）](docs/reference/mdv.html) を参照してください。
 
 全文書型の一覧は [テンプレートカタログ](docs/templates/index.html) を参照してください。
 

@@ -2,14 +2,16 @@
 
 **Write freely. Publish as one.**
 
-quarto-plus is a Quarto-based pipeline tool that merges documents written in `.md` / `.qmd` / `.adoc` into a **single static site** and publishes them as validated HTML. It also ships a library of **practical templates** you can copy and use right away.
+quarto-plus is a Quarto-based pipeline tool that merges documents written in `.md` / `.qmd` / `.adoc` into a **single static site** and publishes them as validated HTML. It also ships a library of **practical templates** and a hands-on guide to running Quarto on Google Colab.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.2-blue.svg)](https://github.com/watanabe3tipapa/quarto-plus/releases)
+[![Version](https://img.shields.io/badge/version-v0.3.3-blue.svg)](https://github.com/watanabe3tipapa/quarto-plus/releases)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-live-blue.svg)](https://watanabe3tipapa.github.io/quarto-plus/)
 [![GitHub](https://img.shields.io/github/issues/watanabe3tipapa/quarto-plus.svg)](https://github.com/watanabe3tipapa/quarto-plus/issues)
 
 [日本語](README.md) | [English](README_en.md)
+
+**Quick links:** [Live site](https://watanabe3tipapa.github.io/quarto-plus/) · [Tutorial](https://watanabe3tipapa.github.io/quarto-plus/docs/tutorial.html) · [Template catalog](https://watanabe3tipapa.github.io/quarto-plus/docs/templates/index.html) · [DOM structure](https://watanabe3tipapa.github.io/quarto-plus/docs/dom-structure.html) · [Colab guide](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/colab-guide.html) · [Open in Colab](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb)
 
 ## Concept
 
@@ -44,20 +46,36 @@ No matter which format you write in, the published result shares the same `pageP
 This tool does not just build — it checks that things are **correctly assembled**. Just as ESLint reviews code, quarto-plus has built-in validation for documentation sites.
 
 - **Link validation (`validate`)**: same-page and cross-page fragment resolution, existence of images/CSS/JS, duplicate ID detection
-- **Template validation (`validate-doc-types`)**: templates must satisfy the required headings defined in `tools/doc-types.json`
+- **Template validation (`validate:templates`)**: templates must satisfy the required headings defined in `tools/doc-types.json` (registry-driven)
 
 ## Features
 
-- Integrates `.md` / `.qmd` / `.adoc` into a single site (quarto render + asciidoctor → harmonize)
+### Pipeline
+
+- Integrates `.md` / `.qmd` / `.adoc` into a single site (quarto render + Asciidoctor → merge → harmonize)
 - Unifies heading IDs as `pagePrefix-<slug>` (kana → romaji, duplicates get `-2`, `-3`)
 - Auto-generates a nested `#toc` from `h2..h6`
 - Aggregates images under content-hash names `assets/<sha>-<basename>` and rewrites reference paths
 - Resolves cross-page anchors (with the same fallback for quarto / asciidoctor origins)
-- **34 practical templates** (15 `.qmd` / 14 `.md` / 5 `.adoc`) plus a catalog page
-- **MDV (`.mdv`) included as a reference** for a separate mechanism (self-contained charts in Markdown; not for regular use — see [What is MDV (reference)](docs/reference/mdv.html))
-- Registry-driven validation: `tools/doc-types.json` is the source of truth driving required-heading checks
+- Validates links, images, and duplicate IDs (`validate`); checks required template headings (`validate:templates`, registry-driven via `tools/doc-types.json`)
 - Regenerates `search.json` after harmonize to prevent broken site-search links
 - Automatic GitHub Pages deployment via GitHub Actions
+
+### Bundled content
+
+- **34 practical templates** (15 `.qmd` / 14 `.md` / 5 `.adoc`) — see the [template catalog](https://watanabe3tipapa.github.io/quarto-plus/docs/templates/index.html)
+- **MDV (`.mdv`) included as a reference** for a separate mechanism (self-contained charts in Markdown; not for regular use — see [What is MDV (reference)](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/mdv.html))
+- **[A complete guide to using Quarto on Google Colab](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/colab-guide.html)** — from installing the Quarto CLI to rendering `.qmd` / `.ipynb`, with **practical recipes** (e-Stat reports, blog publishing, dashboards, extension projects)
+- **Colab notebook template** — open it in your own Colab via the "Try it on Google Colab" section below
+
+## Try it on Google Colab (reference)
+
+No local clone needed — try Quarto straight from your browser.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb)
+
+- **Template notebook** [`colab/quarto-colab.ipynb`](colab/quarto-colab.ipynb) — run the cells in order to install the Quarto CLI, create and render a `.qmd` to HTML, scaffold a project, and persist artifacts to Google Drive
+- **[Complete guide](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/colab-guide.html)** — practical recipes included: reporting on e-Stat government statistics, publishing a blog with `quarto publish`, generating `format: dashboard` dashboards, and building projects with Lua filters / post-render hooks
 
 ## Installation
 
@@ -72,20 +90,22 @@ This tool does not just build — it checks that things are **correctly assemble
 
 On macOS you can install everything with `brew install quarto node asciidoctor`. See the official installers for Windows / Linux.
 
-### 1. Get the repository
+### Basic steps
+
+1. Get the repository
 
 ```bash
 git clone https://github.com/watanabe3tipapa/quarto-plus.git
 cd quarto-plus
 ```
 
-### 2. Install dependencies
+2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Build
+3. Build
 
 ```bash
 npm run build:all
@@ -99,7 +119,16 @@ adoc → html ─┐
 quarto render ┘
 ```
 
-### 4. Publish
+### Key commands
+
+| Command | Purpose |
+|---|---|
+| `npm run build:all` | adoc conversion → quarto render → merge → harmonize → validation → `dist/` in one shot |
+| `npm run validate` | Run link / image / duplicate-ID validation only |
+| `npm run validate:templates` | Check required template headings (`tools/doc-types.json`) |
+| `npm run rebuild:search` | Regenerate `search.json` after harmonize |
+
+### Publish
 
 Pushing to `main` triggers an automatic build and deploy via GitHub Actions. See the [tutorial](https://watanabe3tipapa.github.io/quarto-plus/docs/tutorial.html) for details.
 
@@ -114,6 +143,10 @@ The repository ships **34 practical templates** under `docs/templates/`. Copy th
 | `.adoc` | 5 | Playbook / API Reference / Meeting Notes / Cheatsheet |
 | `.mdv` (reference) | 2 | Basic / Dashboard (separate mechanism, not for regular use) |
 
+Reference guides: [Use Quarto on Google Colab](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/colab-guide.html) · [What is MDV (reference)](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/mdv.html) · [.mdv vs .qmd comparison](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/mdv-qmd-comparison.html)
+
+Colab template: [Open in Colab](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb)
+
 ## Documentation
 
 For newcomers, reading in this order gives you the full picture.
@@ -121,6 +154,7 @@ For newcomers, reading in this order gives you the full picture.
 1. [Tutorial](https://watanabe3tipapa.github.io/quarto-plus/docs/tutorial.html) — the pipeline at a glance
 2. [Template catalog](https://watanabe3tipapa.github.io/quarto-plus/docs/templates/index.html) — practical templates
 3. [DOM structure](https://watanabe3tipapa.github.io/quarto-plus/docs/dom-structure.html) — normalization rules for heading IDs, TOC, links, and images
+4. [Google Colab guide](https://watanabe3tipapa.github.io/quarto-plus/docs/reference/colab-guide.html) — running Quarto on Colab with practical recipes (reference)
 
 Development notes are in [DEV-MEMO](DEV-MEMO.md).
 

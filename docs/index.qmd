@@ -9,6 +9,7 @@ title: "quarto-plus ドキュメント"
 - [テンプレートライブラリ](templates/index.html) — コピーして使える実用雛形の一覧
 - [クイックスタート](tutorial.html) — はじめ方のチュートリアル
 - [DOM構造の解説](dom-structure.html) — harmonize が正規化する DOM 構造の全体像・見出しID・目次・リンク解決・画像参照
+- [Google Colab で Quarto を使いまくる完全ガイド](reference/colab-guide.html) — Colab 上で Quarto CLI を使う実践テクニック集（参考）
 - [MDV とは（参考）](reference/mdv.html) — 別系統の仕組み .mdv の紹介・導入手順（参考）
 - [.mdv と .qmd の詳細比較](reference/mdv-qmd-comparison.html) — 設計思想・構文・機能の比較（参考）
 

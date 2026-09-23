@@ -80,6 +80,16 @@ AsciiDoc のブロック構文を活用する型の雛形です。出力は `ado
 
 MDV の導入手順・書き方・制約は [MDV とは（参考）](../reference/mdv.html) を参照してください。また、`.mdv` と `.qmd` の使い分けは [.mdv と .qmd の詳細比較](../reference/mdv-qmd-comparison.html) を参照してください。
 
+## その他の参考（Colab）
+
+Colab 環境向けのテンプレートです。次のボタンで**自分の Google Colab** にノートブックを開き、セルを実行するだけで Quarto のビルドを体験できます。
+
+| 型 | リンク | 用途 |
+|---|---|---|
+| Quarto on Colab | [quarto-colab.ipynb](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb) | Colab 上で `.qmd` / `.ipynb` をレンダリングするノートブック雛形 |
+
+詳しい使い方は [Google Colab で Quarto を使いまくる完全ガイド](../reference/colab-guide.html) を参照してください。
+
 ## 統合の確認ポイント
 
 - 各ページの見出しは `pagePrefix-<slug>` 形式の一意な ID を持ちます

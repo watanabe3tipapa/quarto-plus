@@ -8,3 +8,5 @@ adoc-pages/
 
 **/*.quarto_ipynb
 **/*.ipynb
+!colab/
+!colab/**

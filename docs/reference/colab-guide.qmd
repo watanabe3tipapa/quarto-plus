@@ -1,0 +1,448 @@
+---
+title: "Google Colab で Quarto を使いまくる完全ガイド"
+---
+
+::: {.callout-note}
+これは**参考ガイド**です。Google Colab という外部環境で Quarto CLI を動かす実践テクニックをまとめたものです。quarto-plus 本体（`.qmd` / `.md` / `.adoc` を単一サイトへ統合するパイプライン）とは独立して使える知見集として扱ってください。
+:::
+
+Colab 上で Quarto CLI をインストールし、`.qmd` / `.ipynb` を自由にレンダリングする実践テクニックを集めました。環境構築から便利な拡張機能、トラブルシューティングまでカバーします。
+
+**セル実行だけで試したい方は、次のボタンから自分の Google Colab で Quarto テンプレートノートブック（`colab/quarto-colab.ipynb`）を開いてください。**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb)
+
+ノートブックのソースは [colab/quarto-colab.ipynb](https://github.com/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb) です。
+
+## 1. Quarto CLI を Colab にインストールする
+
+Google Colab には Quarto CLI が標準で入っていないため、セル内で Linux 用バイナリをダウンロード・展開します。
+
+### インストール用セル
+
+```text
+# Quarto CLI (Linux x86_64) をダウンロードしてインストール
+import os, urllib.request, subprocess, json, sys
+
+QUARTO_VERSION = "1.6.43"  # 必要に応じて最新版に変更
+DEB_URL = f"https://github.com/quarto-dev/quarto-cli/releases/download/v{QUARTO_VERSION}/quarto-{QUARTO_VERSION}-linux-amd64.tar.gz"
+INSTALL_DIR = "/usr/local/quarto"
+
+# ダウンロード & 展開
+!mkdir -p /tmp/quarto-install
+!wget -q -O /tmp/quarto-install/quarto.tar.gz {DEB_URL}
+!mkdir -p {INSTALL_DIR}
+!tar -xzf /tmp/quarto-install/quarto.tar.gz -C {INSTALL_DIR} --strip-components=1
+
+# PATH に追加
+os.environ["PATH"] = f"{INSTALL_DIR}/bin:{os.environ.get('PATH','')}"
+
+# 確認
+!quarto --version
+```
+
+::: {.callout-tip}
+最新のリリース番号は [quarto-dev/quarto-cli/releases](https://github.com/quarto-dev/quarto-cli/releases) で確認し、`QUARTO_VERSION` を書き換えてください。
+:::
+
+## 2. `.qmd` を Colab で書いてレンダリングする
+
+Colab 上でテキストセルやファイル書き込みで `.qmd` を作成し、`quarto render` で HTML / PDF / docx に変換できます。
+
+### サンプル: Colab セル内で .qmd を作成して HTML 出力
+
+````text
+qmd_source = '''
+---
+title: "Colab + Quarto Demo"
+author: "Your Name"
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
+jupyter: python3
+---
+
+## データの可視化
+
+```python
+#| label: fig-demo
+#| fig-cap: "サンプルプロット"
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.figure(figsize=(8,4))
+plt.plot(x, y, color="steelblue", linewidth=2)
+plt.title("Sine Wave")
+plt.show()
+```
+
+## まとめ
+
+Colab 上で Quarto を使えば、コード・出力・解説を一括管理できます。
+'''
+
+with open("/content/report.qmd", "w", encoding="utf-8") as f:
+    f.write(qmd_source)
+
+# レンダリング
+!quarto render /content/report.qmd --to html
+
+# 出力ファイルの確認
+import glob, os
+for f in glob.glob("/content/report*"):
+    print(f)
+````
+
+::: {.callout-tip}
+`--to pdf` や `--to docx` に変えるだけで出力形式を切り替えられます。PDF 出力には TeX 環境（TinyTeX など）が必要です。
+:::
+
+## 3. `.ipynb` を Quarto でレンダリングする
+
+Colab で作成したノートブック（`.ipynb`）も Quarto で美しいドキュメントに変換できます。
+
+### 既存のノートブックをレンダリング
+
+```text
+# アップロード済み・作成済みの ipynb を指定して render
+notebook_path = "/content/current.ipynb"
+
+# もしくはアップロードした ipynb を指定
+# notebook_path = "/content/mynote.ipynb"
+
+!quarto render {notebook_path} --to html --execute
+```
+
+::: {.callout-warning}
+Google Colab でダウンロードした `.ipynb` は、言語キー（kernelspec の language）が欠落している場合があり、Quarto のレンダリングでエラーになることがあります。その場合は、kernelspec に `"language": "python"` を手動で追加してください。
+:::
+
+## 4. Colab 上で Quarto プロジェクトを動かす
+
+複数ファイルからなる Quarto プロジェクト（book / website）も Colab 上でビルド可能です。
+
+### 手順
+
+```text
+# 1. プロジェクトディレクトリを作成
+!mkdir -p /content/myquarto
+%cd /content/myquarto
+
+# 2. _quarto.yml を作成
+quarto_yml = '''
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "My Quarto Site"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+'''
+with open("_quarto.yml", "w", encoding="utf-8") as f:
+    f.write(quarto_yml)
+
+# 3. index.qmd / about.qmd を作成（省略: 通常通り書く）
+
+# 4. レンダリング
+!quarto render
+
+# 5. 出力確認
+!ls -R _site
+```
+
+::: {.callout-tip}
+出力された `_site` フォルダを Google Drive に保存しておくと、静的サイトとして GitHub Pages にデプロイできます。
+:::
+
+## 5. Google Drive と連携して永続化する
+
+Colab のセッションは破棄されるため、Quarto ファイルや出力物を Google Drive に保存しておくと便利です。
+
+### Drive マウント + ワークディレクトリ設定
+
+```text
+from google.colab import drive
+drive.mount("/content/drive")
+
+# 作業ディレクトリを Drive 内に設定
+import os
+work_dir = "/content/drive/MyDrive/quarto-work"
+os.makedirs(work_dir, exist_ok=True)
+os.chdir(work_dir)
+
+# ここから Quarto ファイル作成・レンダリング
+!quarto --version
+```
+
+## 6. quarto-colab 拡張機能で "Open in Colab" バッジを追加
+
+Quarto ドキュメントから Jupyter Notebook を出力する際、**quarto-colab** 拡張機能を使うと "Open in Colab" バッジを自動付与できます。
+
+| 機能 | 内容 |
+|---|---|
+| バッジ自動付与 | HTML / ipynb 出力に "Open in Colab" リンクを追加 |
+| 多言語セットアップ | R (rpy2)、Julia (juliacall)、SQL (jupysql) などのマジックコマンド設定を自動化 |
+| GitHub 連携 | gh-user / gh-repo / gh-branch を指定してリンク生成 |
+
+### インストール & 使用例
+
+```text
+# 拡張機能の追加（ローカル or Colab 上の Quarto プロジェクトで）
+!quarto add coatless-quarto/colab
+```
+
+```yaml
+---
+title: "Colab 対応ドキュメント"
+format:
+  jupyter: default
+  html: default
+colab:
+  gh-user: "your-github-username"
+  gh-repo: "your-repo"
+  gh-branch: "main"
+filters:
+  - colab
+---
+```
+
+この拡張機能は、Quarto >= 1.4.0 と GitHub 公開リポジトリが前提です。詳細は [quarto-colab 公式ページ](https://quarto.thecoatlessprofessor.com/colab/) を参照してください。
+
+## 7. よく使うコマンド早見表
+
+| 目的 | コマンド |
+|---|---|
+| qmd → HTML | `quarto render file.qmd --to html` |
+| qmd → PDF | `quarto render file.qmd --to pdf` |
+| qmd → docx | `quarto render file.qmd --to docx` |
+| ipynb → HTML（実行あり） | `quarto render file.ipynb --to html --execute` |
+| プレビュー（ローカル想定） | `quarto preview file.qmd` |
+| プロジェクト全体をレンダリング | `quarto render`（_quarto.yml があるディレクトリで） |
+| ipynb ↔ qmd 変換 | `quarto convert file.ipynb` / `quarto convert file.qmd` |
+| バージョン確認 | `quarto --version` |
+
+## 8. 実践用例（自分のリポジトリから）
+
+作者のリポジトリ（`watanabe3tipapa/*`）で実際に Quarto をどう使っているか、そのパターンを Colab で再現できる形に落とし込んだ用例です。「データ取得 → 描画 → ドキュメント化 → 公開」の流れを参考にしてください。
+
+| 用例 | 元ネタ | ポイント |
+|---|---|---|
+| 政府統計（e-Stat）のレポート化 | [graph-tutorial](https://github.com/watanabe3tipapa/graph-tutorial) | データ取得 → グラフ描画 → `.qmd` 埋込み → render |
+| ブログをサイト化して公開 | [nb-quarto-blog](https://github.com/watanabe3tipapa/nb-quarto-blog) | 記事 front-matter + `_metadata.yml` → 静的サイト → publish |
+| ダッシュボード生成 | quarto-plus 同梱の [dashboard テンプレート](../templates/dashboard/overview.html) | `format: dashboard` で KPI 一覧を HTML1 ファイル化 |
+| 拡張（Lua フィルタ / post-render）付きプロジェクト | [okf-seedling](https://github.com/watanabe3tipapa/okf-seedling) | `_extensions/` と post-render の Node スクリプトも Colab で実行可 |
+
+### 用例 1: 政府統計（e-Stat）データを分析してレポート化（graph-tutorial 流）
+
+[graph-tutorial](https://github.com/watanabe3tipapa/graph-tutorial) は「e-Stat の人口データを収集し、グラフを都度生成する」EBPM（証拠に基づく政策立案）パイプラインです。同じ発想を Colab の 1 ノートブックにまとめられます。API アプリ ID（`ESTAT_APP_ID`）は e-Stat の [API サイト](https://www.e-stat.go.jp/api/) で無料登録できます。
+
+```text
+# e-Stat 統計データ API（graph-tutorial と同一の statsDataId を使用）
+import requests
+
+APP_ID = "YOUR_ESTAT_APP_ID"          # e-Stat API で登録して取得
+URL = "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData"
+
+res = requests.get(URL, params={
+    "appId": APP_ID,
+    "statsDataId": "0003448233",      # 総務省『人口推計』
+    "lang": "J",
+    "metaGetFlg": "Y",
+    "cntGetFlg": "N",
+})
+items = res.json()["GET_STATS_DATA"]["STATISTICAL_DATA"]["DATA_INF"]["VALUE"]
+
+# {年: 総人口} に整形してグラフ描画
+import matplotlib.pyplot as plt
+
+year_map = {}
+for it in items:
+    v = it["$"].replace(",", "")
+    if v.isdigit():
+        year_map[int(it["@time"])] = int(v)
+
+years = sorted(year_map)
+plt.figure(figsize=(9, 4))
+plt.plot(years, [year_map[y] for y in years])
+plt.title("日本の総人口の推移")
+plt.ylabel("人口（人）")
+plt.tight_layout()
+plt.savefig("population.png")          # PNG を保存（後で .qmd に埋め込む）
+print("saved: population.png")
+```
+
+```text
+# グラフを埋め込んだレポートを .qmd で書き、HTML 化
+report = '''---
+title: "人口レポート（自動生成）"
+format: html
+---
+
+## 日本の総人口の推移
+
+![人口推移](population.png)
+
+## まとめ
+
+e-Stat のデータを取得して Quarto でレポート化しました。
+'''
+with open("report.qmd", "w", encoding="utf-8") as f:
+    f.write(report)
+
+!quarto render report.qmd --to html
+```
+
+::: {.callout-tip}
+グラフは先に PNG として出力してから `.qmd` に埋め込む方式にしています。これなら Quarto 側で Python セルを実行する必要がなく、jupyter カーネルなしでもスムーズに render できます。
+:::
+
+### 用例 2: ブログ記事をサイト化して公開（nb-quarto-blog 流）
+
+[nb-quarto-blog](https://github.com/watanabe3tipapa/nb-quarto-blog) は、`posts/` 配下に日付・カテゴリ付き front-matter の記事を並べ、`_metadata.yml` で一覧設定した Quarto ブログです。リポジトリを clone して `quarto render` → `quarto publish gh-pages` で公開まで一気に進められます。
+
+```text
+!git clone https://github.com/watanabe3tipapa/nb-quarto-blog.git
+%cd nb-quarto-blog
+
+# 自分の記事を posts/ に追加・編集
+!quarto render
+!ls _site
+
+# GitHub Pages へ公開（リポジトリへの push 権限が必要）
+!quarto publish gh-pages
+```
+
+記事の front-matter はこのような形です（作成日・カテゴリ・画像を指定し、一覧は `_metadata.yml` が自動集計）。
+
+```text
+---
+title: "Getting Started with Data Visualization"
+author: "watanabe3tipapa"
+date: "2024-11-10"
+categories: [data-science, visualization, tutorial]
+---
+```
+
+### 用例 3: ダッシュボード生成（dashboard テンプレート流）
+
+quarto-plus が同梱する [dashboard テンプレート](../templates/dashboard/overview.html) のような `format: dashboard` を使うと、KPI カードやタブ構成のダッシュボードを HTML 1 ファイルで出力できます。Python セルを実行する場合、Quarto が Jupyter カーネルを起動するため、必要に応じて導入します。
+
+````text
+# （必要なら）Quarto の Python 実行に jupyter を導入
+!python3 -m pip install -q jupyter
+!python3 -m ipykernel install --user --name python3
+
+from pathlib import Path
+
+dash = '''---
+title: "営業ダッシュボード"
+format: dashboard
+---
+
+## 在庫サマリ {layout-ncol=2}
+
+```python
+import pandas as pd
+df = pd.DataFrame({"status": ["α","β","γ","δ"], "count": [120, 80, 55, 300]})
+print(df)
+```
+
+### 完了数 {.value}
+20,314
+'''
+Path("dash.qmd").write_text(dash, encoding="utf-8")
+
+!quarto render dash.qmd --to html
+````
+
+::: {.callout-warning}
+`format: dashboard` は Python セルを実行するため Jupyter が必要です。Colab でカーネルが起動しない場合は `!quarto render dash.qmd --to html --no-execute` でレイアウト確認から始めてください。
+:::
+
+### 用例 4: 拡張（Lua フィルタ / post-render）付きプロジェクトをビルド（okf-seedling 流）
+
+[okf-seedling](https://github.com/watanabe3tipapa/okf-seedling) は `.qmd` を書くだけで人間用 HTML と機械用 OKF バンドルを並行生成・検証するプロジェクトで、`_extensions/` の Lua フィルタと `post-render` スクリプト（Node.js）を使います。フォーマット拡張を伴うプロジェクトも Colab でそのままビルドできます。
+
+```text
+!git clone https://github.com/watanabe3tipapa/okf-seedling.git
+%cd okf-seedling
+!npm install          # post-render スクリプトの依存（assets 配下から _site 生成）
+!quarto render
+!ls _site
+```
+
+::: {.callout-tip}
+`post-render` や Lua フィルタが Node.js を必要とする場合、Colab 環境の Node バージョン（`node --version`）がリポジトリの要求を満たすことを確認してください。
+:::
+
+## 9. トラブルシューティング
+
+### Q: `quarto: command not found` になる
+
+PATH が通っていない可能性があります。以下で明示的にパスを指定してください。
+
+```text
+!/usr/local/quarto/bin/quarto --version
+```
+
+または、毎回 `os.environ["PATH"]` に `/usr/local/quarto/bin` を追加してください。
+
+### Q: ipynb レンダリング時に "language key missing" エラー
+
+Colab で作成したノートブックの kernelspec に `language` キーがない場合があります。以下で修正できます。
+
+```text
+import json
+
+with open("notebook.ipynb", "r", encoding="utf-8") as f:
+    nb = json.load(f)
+
+nb["metadata"]["kernelspec"]["language"] = "python"
+
+with open("notebook.ipynb", "w", encoding="utf-8") as f:
+    json.dump(nb, f, indent=2, ensure_ascii=False)
+```
+
+### Q: PDF 出力ができない
+
+Quarto の PDF 出力には TeX 環境が必要です。Colab 上では TinyTeX をインストールするのが簡単です。
+
+```text
+!quarto install tool tinytex
+```
+
+インストール後、`quarto render file.qmd --to pdf` が使えるようになります。
+
+## 10. 実践フローまとめ
+
+1. Colab ノートブックの最初のセルで Quarto CLI をインストール
+2. Google Drive をマウントして作業ディレクトリを永続化
+3. `.qmd` または `.ipynb` を作成・編集
+4. `quarto render` で HTML / PDF / docx を出力
+5. 必要に応じて `quarto-colab` 拡張機能で "Open in Colab" バッジを追加
+6. 出力物を Drive に保存、または GitHub 経由で公開
+
+::: {.callout-tip}
+このフローをまとめたテンプレートノートブック（`colab/quarto-colab.ipynb`）を用意しています。[Open in Colab](https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb) で自分の Colab に開き、セルの実行だけで一連のビルドを始められます。
+:::
+
+## 関連
+
+- [MDV とは（参考）](mdv.html)
+- [テンプレートライブラリ](../templates/index.html)
+- [チュートリアル](../tutorial.html)

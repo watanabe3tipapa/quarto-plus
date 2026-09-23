@@ -535,4 +535,78 @@ quarto-plus の本体パイプライン（`.md/.qmd/.adoc` を harmonize して�
 - ローカル `QUARTO_PYTHON=<venv>/bin/python` で `npm run build:all` 成功、`validate: OK (52 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`、`copy-dist: 170 files`
 - GitHub Actions（Deploy to GitHub Pages）**Success**、GitHub Pages へのデプロイ成功を `gh run` で確認
 
+---
+
+## Phase 19: Google Colab ガイドのサイト統合（2026-09-23）
+
+### 趣旨
+`quarto_colab_guide.html`（単体 HTML で作成していた「Google Colab で Quarto を使いまくる完全ガイド」）を quarto-plus のパイプラインに統合し、**LP から自分の Colab を開ける入り口**を設置した。統合完了後に単体 HTML は削除。
+
+### 実装
+1. **`docs/reference/colab-guide.qmd`**（新規・参考ページ）
+   - Colab での Quarto CLI インストール / `.qmd`・`.ipynb` レンダリング / プロジェクト構築 / Drive 永続化 / quarto-colab 拡張 / コマンド早見表 / トラブルシューティングを `.qmd` 化
+   - トップに `::: {.callout-note}` で「参考ガイドである」旨を明示し、末尾に「関連」導線（MDV / テンプレート / チュートリアル）
+   - コード例は **実行させない `text` / `yaml` フェンス**で記述（`{python}` フェンスを使うと Jupyter カーネルを起動する既知の罠を踏まない。mdv-qmd-comparison と同じ方針）
+2. **`colab/quarto-colab.ipynb`**（新規・Colab ノートブック雛形）
+   - Step 0〜4: Quarto CLI インストール → `.qmd` レンダリング → ipynb レンダリング（kernelspec language 自動補完つき） → Quarto プロジェクト構築 → Drive マウント + コマンド早見表・トラブルシューティング
+   - **LP から「自分の Colab」で開ける入口**: `https://colab.research.google.com/github/watanabe3tipapa/quarto-plus/blob/main/colab/quarto-colab.ipynb`（Open in Colab バッジ）
+3. **導線**
+   - LP（`index.qmd`）: 「Colab で Quarto をはじめる」セクション + Open in Colab バッジ
+   - `docs/index.qmd`（トピック一覧）、`docs/templates/index.qmd`（参考に Colab 節）、`docs/reference/colab-guide.qmd`（先頭にバッジ）、README / README_en（特徴・テンプレート節）
+4. **`.gitignore` の例外追加**: `**/*.ipynb` がすべての ipynb を無視するため、`!colab/` / `!colab/**` を追加して雛形を追跡対象に（`git check-ignore` / `git add -n` で確認）
+
+### Phase 19 追補（総点検 + 実践用例の増補）
+- **実践用例セクションを追加**（`docs/reference/colab-guide.qmd` §8）: 作者のリポジトリ（`watanabe3tipapa/*`）を元ネタに、Colab で再現できる 4 用例を陳列
+  1. e-Stat 政府統計データのレポート化（[graph-tutorial](https://github.com/watanabe3tipapa/graph-tutorial) の `estat.js` と同じ `statsDataId=0003448233` / `rest/3.0/app/json/getStatsData` を使用。グラフは先に PNG 化して `.qmd` に埋め込み、jupyter 不要で render）
+  2. ブログのサイト化と公開（[nb-quarto-blog](https://github.com/watanabe3tipapa/nb-quarto-blog) 型の記事 front-matter + `_metadata.yml` → `quarto publish gh-pages`）
+  3. ダッシュボード生成（quarto-plus 同梱 dashboard テンプレート型の `format: dashboard`。Jupyter カーネルが必要なため注意書き + `--no-execute` フォールバックを明記）
+  4. Lua フィルタ / post-render 付きプロジェクトのビルド（[okf-seedling](https://github.com/watanabe3tipapa/okf-seedling) 型。`_extensions/` と Node post-render が Colab で動くことを示す）
+- セクション再採番: 旧 8（トラブルシューティング）→9、旧 9（実践フローまとめ）→10
+- **総点検で修正した不具合**
+  - **ネストフェンスの早閉じ**: §2 のサンプル（qmd 文字列内の ` ```python `）が 3 バックティック外側フェンスを途中で閉じ、残りが本文に漏れて `# レンダリング` 等の見出しが化生していた → 外側を 4 バックティック化して解消
+  - 用例 3 の dashboard サンプルも内側に ` ```python ` を含むため同様に 4 バックティック化
+  - §3 の使われていない import（`drive` / `json` / `os`）と誤解を招くコメントを削除・修正
+  - §4 の「Google Drive にマウントして保存」→「Google Drive に保存」へ文言修正
+  - §9 の tip を「テンプレートノートブックを用意している」内容に更新（単体 HTML 由来の旧文面を解消）
+  - LP: 「参考として、外部環境での活用法も…」→「別系統の仕組みや外部環境での活用法も…」に修正
+  - ノートブック: markdown セルの不正な `outputs` キーを除去 /「宛先セル」→「次のセル」へ修正 / 実践用例への導線セルを追加
+- **タイポ / 整合チェック**: `quarto_colab_guide` の残存参照なし、バージョン v0.3.3 で統一（DEV-MEMO の Phase 18 記録は履歴として維持）
+
+### 検証
+- `QUARTO_PYTHON=<venv>/bin/python` で `npm run build:all` 成功、`validate: OK (53 pages, no broken anchors)`、`validate-doc-types: OK (19 templates)`、`rebuild-search: 308 entries`、`copy-dist: 171 files`
+- `dist/docs/reference/colab-guide.html` に `#toc` と callout が生成され、LP・カタログ・README からノートブックへの導線が確認できた
+- 検索（search.json）に colab-guide のエントリ（本文 + 実践用例 subsections を含む）が追加されたことを確認
+
+### 留意点
+- **Open in Colab のリンクは GitHub 上の `main` ブランチに `colab/quarto-colab.ipynb` が push 済みでないと開けない**（サイト公開前に push が必要）
+- 単体 `quarto_colab_guide.html` は統合後に削除済み
+
+### バージョン
+- **v0.3.3** として確定（`package.json` / `package-lock.json` / README（日英）Version バッジを `0.3.2` → `0.3.3` へ更新）
+
+## Phase 20: LP デザイン刷新 + README ブラッシュアップ（2026-09-23）
+
+### 趣旨
+LP（`index.qmd` / `themes/lp.css`）を [moji-code](https://watanabe3tipapa.github.io/moji-code/) 風のネオ・ブルータリズムデザインへ刷新し、README（日英）を現行構成（Colab ガイド・実践用例・v0.3.3）に合わせて再整備した。
+
+### LP デザイン（moji-code 風）
+- トークン: 白 `#ffffff` / 墨 `#0b0b0b` / ミント `#00e5a8` / `#f2f2f2`、`--radius:4px`、Inter + Noto Sans JP + Roboto Mono（`themes/lp-head.html` を `include-in-header` で読込）
+- 980px の「アプリ枠」（6px 黒枠 + グラデーション背景）。quarto 標準ナビ（`#quarto-header`）とタイトルブロックは非表示にし、独自マストヘッド（`v0.3.3 · md / qmd / adoc`）+ ヒーロー + `.lp-nav` を新設
+- `##` 見出しをボーダースティッカー化（`display:table` + アクセント四角 `::before`）、インラインリンクは下線 3px + hover ミント、インライン `code` は破線チップ、`ol`/`ul`/`table`/`pre` を 4px 黒枠のカード化、Colab 起動部を `.colab-open` ボックス化
+- モバイル対応（`max-width: 640px` で枠縮小・CTA 縦積み・テーブル横スクロール）
+
+### README ブラッシュアップ（日英対称）
+- クイックリンク行 / 特徴の「パイプライン / 同梱コンテンツ」分割 / 「Colab で試す」節（Open in Colab バッジ）/ 主要コマンド表 / ドキュメント読書順に Colab ガイドを追加
+- `docs/*.html` の相対リンク（GitHub 上 404）を公開サイト URL（`https://watanabe3tipapa.github.io/quarto-plus/…`）へ統一
+- タイポ修正: `.md :` → `.md:`、「組合せ」→「組み合わせ」
+
+### 検証（Phase 19 と同じ手順）
+- `QUARTO_PYTHON=<venv>/bin/python` で `npm run build:all` 成功、`validate: OK (53 pages, no broken anchors)`、`rebuild-search: 308 entries`、`copy-dist: 171 files`
+- `dist/index.html` にフォント link・`lp.css`・`.lp-masthead` / `.lp-nav` / `.colab-open` が反映、`#title-block-header` 非表示維持
+- Headless Chrome でスクリーンショット撮影（デスクトップ / モバイル）を実施（目視は未実施）
+
+### 留意点
+- **quarto 1.9.37 では `format.html.includes.in-header` が効かず、単一キー `format.html.include-in-header` が必要**（`includes:` の入れ子形式は無視される）
+- LP のみ `#quarto-header` を非表示にするため、LP だけ独自 nav を持つ（他ページは quarto 標準ナビのまま）
+
 
