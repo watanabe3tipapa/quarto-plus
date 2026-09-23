@@ -1,0 +1,378 @@
+/* site-wide brutalist theme (moji-code 風) — applies to all quarto-rendered pages */
+
+:root {
+  --bg: #ffffff;
+  --fg: #0b0b0b;
+  --accent: #00e5a8;
+  --muted: #f2f2f2;
+  --border: #0b0b0b;
+  --radius: 4px;
+  --font-ui: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+    Meiryo, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+    "Noto Mono", monospace;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==== ナビバー（サイト共通、LP では非表示に切替） ==== */
+#quarto-header {
+  background: var(--bg);
+}
+
+#quarto-header .navbar {
+  background: var(--bg);
+  border-bottom: 4px solid var(--border);
+}
+
+#quarto-header .navbar-brand {
+  border: 3px solid var(--border);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+#quarto-header .navbar-brand:hover {
+  background: var(--accent);
+}
+
+#quarto-header .nav-link {
+  color: var(--fg);
+  font-weight: 700;
+  border-bottom: 3px solid transparent;
+  padding: 10px 8px;
+}
+
+#quarto-header .nav-link:hover {
+  background: var(--accent);
+  color: var(--fg);
+}
+
+#quarto-header .nav-link.active {
+  border-bottom-color: var(--fg);
+}
+
+#quarto-header .navbar-toggler {
+  border: 3px solid var(--border);
+  color: var(--fg);
+}
+
+#quarto-header .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280,0,0,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+#quarto-header .form-control,
+#quarto-header .aa-Autocomplete {
+  background: var(--bg);
+  color: var(--fg);
+  border: 3px solid var(--border);
+  border-radius: 2px;
+}
+
+#quarto-header .form-control::placeholder,
+#quarto-header .aa-Input::placeholder {
+  color: #777;
+}
+
+/* ==== アプリ枠 ==== */
+#quarto-document-content {
+  max-width: 980px;
+  margin: 28px auto 48px;
+  padding: 26px 28px 40px;
+  border: 6px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--muted), transparent 40%);
+}
+
+/* ==== タイトルブロック（コンテンツページの見出し） ==== */
+#quarto-document-content h1.title {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 6px 16px;
+  border: 3px solid var(--border);
+  background: var(--bg);
+  border-radius: 2px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* ==== 見出し（スティッカーボックス + アクセント四角） ==== */
+#quarto-document-content h2 {
+  display: table;
+  padding: 6px 14px;
+  margin: 38px 0 16px;
+  border: 3px solid var(--border);
+  background: var(--bg);
+  border-radius: 2px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+#quarto-document-content h2::before {
+  content: "";
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 9px;
+  vertical-align: 2px;
+  background: var(--accent);
+  border: 3px solid var(--border);
+}
+
+/* ==== インラインリンク ==== */
+#quarto-document-content p a,
+#quarto-document-content li a,
+#quarto-document-content td a {
+  color: var(--fg);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 3px solid var(--border);
+  padding: 0 2px;
+}
+
+#quarto-document-content p a:hover,
+#quarto-document-content li a:hover,
+#quarto-document-content td a:hover {
+  background: var(--accent);
+}
+
+/* ==== インラインコード（枠線チップ風） ==== */
+#quarto-document-content p code,
+#quarto-document-content li code,
+#quarto-document-content td code,
+#quarto-document-content h2 code {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  padding: 1px 6px;
+  border: 2px dashed var(--border);
+  border-radius: 2px;
+  font-size: 0.88em;
+  font-weight: 400;
+}
+
+/* ==== コードブロック / パイプライン図 ==== */
+#quarto-document-content pre,
+#quarto-document-content .sourceCode {
+  background: var(--bg);
+  border: 4px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow-x: auto;
+}
+
+#quarto-document-content pre code,
+#quarto-document-content .sourceCode code {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* ==== テーブル ==== */
+#quarto-document-content table {
+  border: 4px solid var(--border);
+  border-collapse: collapse;
+  background: var(--bg);
+}
+
+#quarto-document-content th,
+#quarto-document-content td {
+  border: 2px solid var(--border);
+  padding: 8px 12px;
+}
+
+#quarto-document-content th {
+  background: var(--muted);
+  font-weight: 700;
+}
+
+/* ==== リスト（カード風の枠・Markdown 由来の直下リストのみ） ==== */
+#quarto-document-content > ul,
+#quarto-document-content > ol {
+  border: 4px solid var(--border);
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 14px 16px 14px 38px;
+}
+
+/* asciidoctor 由来（.ulist）や入れ子リストには適用しない */
+
+#quarto-document-content li {
+  margin: 8px 0;
+}
+
+/* ==== LP（ヒーローを持つページ）専用 ==== */
+html body:has(#quarto-document-content .hero) {
+  padding-top: 0;
+}
+
+html body:has(#quarto-document-content .hero) #quarto-header {
+  display: none;
+}
+
+html body:has(#quarto-document-content .hero) #title-block-header {
+  display: none;
+}
+
+.lp-masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.lp-brand {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 3px solid var(--border);
+  background: var(--bg);
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.lp-tag {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border: 2px solid var(--border);
+  background: var(--muted);
+  border-radius: 2px;
+}
+
+.hero {
+  margin: 0 0 26px;
+}
+
+.hero-title {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 6px 16px;
+  border: 3px solid var(--border);
+  background: var(--bg);
+  border-radius: 2px;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  max-width: 56ch;
+  margin: 0 0 20px;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lp-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 30px;
+}
+
+#quarto-document-content .lp-nav a {
+  padding: 8px 14px;
+  border: 4px solid var(--border);
+  border-bottom: 4px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+#quarto-document-content .lp-nav a:hover {
+  background: var(--accent);
+}
+
+#quarto-document-content a.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border: 4px solid var(--border);
+  border-bottom: 4px solid var(--border);
+  background: var(--accent);
+  color: var(--fg);
+  border-radius: 2px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  text-decoration: none;
+}
+
+#quarto-document-content a.btn.btn-ghost {
+  background: var(--bg);
+}
+
+#quarto-document-content a.btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+#quarto-document-content a.btn.btn-ghost:hover {
+  background: var(--accent);
+  color: var(--fg);
+}
+
+.colab-open {
+  display: inline-block;
+  padding: 18px 22px;
+  margin: 14px 0;
+  border: 4px solid var(--border);
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.colab-open a {
+  border: 0;
+  padding: 0;
+}
+
+.colab-open img {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  #quarto-document-content {
+    margin: 14px;
+    padding: 20px 16px 30px;
+    border-width: 4px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+  }
+
+  #quarto-document-content > ul,
+  #quarto-document-content > ol {
+    padding-left: 28px;
+  }
+
+  #quarto-document-content table {
+    display: block;
+    overflow-x: auto;
+  }
+}

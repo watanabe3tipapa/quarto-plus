@@ -2,9 +2,7 @@
 title: "quarto-plus"
 format:
   html:
-    css: themes/lp.css
     toc: false
-    include-in-header: themes/lp-head.html
 ---
 
 <header class="lp-masthead">

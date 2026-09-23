@@ -20,4 +20,9 @@ website:
       - href: docs/index.html
         text: Docs
 
+format:
+  html:
+    css: themes/site.css
+    include-in-header: themes/lp-head.html
+
 metadata-files: []

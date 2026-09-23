@@ -609,4 +609,27 @@ LP（`index.qmd` / `themes/lp.css`）を [moji-code](https://watanabe3tipapa.git
 - **quarto 1.9.37 では `format.html.includes.in-header` が効かず、単一キー `format.html.include-in-header` が必要**（`includes:` の入れ子形式は無視される）
 - LP のみ `#quarto-header` を非表示にするため、LP だけ独自 nav を持つ（他ページは quarto 標準ナビのまま）
 
+## Phase 20 追補: デザインのサイト全体適用（2026-09-23）
+
+### 趣旨
+「LP だけ新デザイン、他ページは標準」の状態を解消し、**moji-code 風ブルータリズムテーマをサイト全体（全 53 ページ中 43 ページ）へ適用**した。
+
+### 実装
+- `themes/lp.css`（LP 専用 per-document css）を廃止し、**`themes/site.css`（サイト共通）に一本化**
+- `_quarto.yml` の `format.html` に `css: themes/site.css` と `include-in-header: themes/lp-head.html`（Google Fonts）を設定（全ページ反映）
+- quarto 標準ナビバーを**非表示ではなく、そのままブルータリズム化**して全ページに維持（白背景・下部 4px 黒枠・ブランドはボックス化・`.nav-link` hover ミント・トグルアイコンは黒 SVG に差替・検索入力は黒枠）
+- **LP（ヒーローを持つページ）だけを `html body:has(#quarto-document-content .hero)` で判定**し、ナビバー + タイトルブロックの非表示と独自ナビを切替
+- 見出し h2 スティッカー・アプリ枠・リンク/コード/テーブル/リスト/コードブロックのカード化は全ページ共通化
+- **Markdown 由来のリストのみカード化**（`#quarto-document-content > ul/ol` 直下セレクタ）→ asciidoctor 由来 `.ulist` の二重枠化を回避
+
+### 検証
+- `npm run build:all` 成功、`validate: OK (53 pages, no broken anchors)`、`rebuild-search: 308 entries`、`copy-dist: 171 files`
+- `dist` の全 53 ページ中 **43 ページに `themes/site.css` がリンク**された
+- 未適用の 10 ページは **dashboard テンプレート（`format: dashboard` 独自）**のみ — 全画面ダッシュボードのため意図的にテーマを分離
+- LP・docs ページでフォント反映を確認。Headless Chrome でスクリーンショット撮影（目視未実施）
+
+### 留意点
+- `format: dashboard` のページはプロジェクト共通 CSS を継承しない（quarto が format ごとに分離する仕様）が、ダッシュボード用途としては正しい挙動
+- LP 判定は `:has()` セレクタに依存（Chrome 105+ / Safari 15.4+ / Firefox 121+ 以降で動作）
+
 
